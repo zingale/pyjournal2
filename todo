@@ -1,0 +1,30 @@
+-- need to create the abilty to add links for files (e.g. long PDFs)
+
+   pj entry --link long.pdf [topic [images]]
+
+   this will do
+
+   :download:`file.pdf <file.pdf>`
+
+-- need to do the building of the sphinx stuff -- this means adding
+   to the main.rst
+
+-- need to create a topic directory if one does not already exist
+   (with prompting)
+
+
+
+differences from old pyjournal:
+
+ -- there is only one journal (with separate topic sections) instead
+    of multiple journals
+
+ -- we now have topics
+
+ -- there is only one entry file per day -- this largely eliminates the
+    need for editing old entries
+
+
+
+
+see: http://openalea.gforge.inria.fr/doc/openalea/doc/_build/html/source/sphinx/rest_syntax.html#glossary-centered-index-download-and-field-list
