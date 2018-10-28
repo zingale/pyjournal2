@@ -4,9 +4,7 @@ pyjournal is a commandline script written in python to create and
 manage a LaTeX-based scientific journal.  The journal is distributed
 (via `git`) so that we can access it from any machine we work on.  It
 is commandline driven to make the barrier-to-entry for creating a
-short entry minimal.  Entries are shown in date-order, and any number
-of appendices can be added to the end of the journal.  The resulting
-PDF journal is searchable.
+short entry minimal.  Entries are shown in date-order.
 
 Note: the current version of this works only for python 3
 
@@ -94,8 +92,6 @@ Note: the current version of this works only for python 3
         yyy-mm-dd-hh-ss.tex
         ...
       yyyy-mm-dd/
-      appendixes/
-	    myappendix.tex
 	    ...
     journal.tex
   ```
@@ -140,8 +136,7 @@ Note: the current version of this works only for python 3
   - `pyjournal.py status [-n nickname]`
 
     display the status of the journal, giving the location of hte
-    files, the name of the remote version, and list the names of the
-	appendices, if any
+    files, the name of the remote version.
 
   - `pyjournal.py pull [-n nickname] `
 
@@ -162,28 +157,6 @@ Note: the current version of this works only for python 3
   to the pages.  This can let you organize entries into topics.
   
 
-* Appendices:
-
-  Sometimes we want to keep some special information in an appendix
-  of the journal, and periodically update it.  
-
-  To create an appendix (or modify an existing one), do:
-
-  `pyjournal.py appendix [-n nickname] appendix-name`
-
-
-* LaTeX structure:
-
-  The journal is in book form with the year as a chapter and month as
-  a section.  The individual entries are separated with a horizontal
-  rule and noted with the time of the entry.
-
-  Each entry is in a separate `.tex` file (`yyyy-mm-dd-hh-mm-ss.tex`)
-  to avoid `git` sync issues (i.e. there should be no conflicts this
-  way)
-   
-  The build process will create a master file for year and month that
-  has includes for each of the day's entries
 
 
 * `.pyjournal` structure:
@@ -193,42 +166,3 @@ Note: the current version of this works only for python 3
   master_repo = XXX.git  ; this is what we push to/pull from
   working_path = YYY     ; local directory we interact with on our machine
   ```
-
-
-
-# pytodo
-
-pytodo shares the basic idea of pyjournal, but is meant for managing
-a collection of TODO lists.  Again, `git` is used to manage them
-across machines.  The basic commands and flow follow that of `pyjournal`.
-See
-
-```
-pytodo.py -h
-```
-
-for a list of commands, and do
-
-```
-pytodo.py command -h
-```
-
-to see the options for that command.
-
-To pretty-up the formatting in emacs, you can use standard markdown
-syntax (`#` for a heading, `*` and `-` for lists) and enable syntax
-highlighting in emacs with the following in your `.emacs`:
-
-```
-(autoload 'markdown-mode "markdown-mode"
-"Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.list\\'" . markdown-mode))
-```
-
-You may also want to disable the annoying electric indent mode
-in recent emacs:
-
-```
-(electric-indent-mode 0)
-```

@@ -120,23 +120,6 @@ def get_args():
                              help="nickname of the journal",
                              type=str, default=None)
 
-        # the appendix command
-        app_ps = sp.add_parser("appendix",
-                               help="add or modify an appendix of the journal")
-        app_ps.add_argument("-n", metavar="nickname",
-                            help="nickname of the journal",
-                            type=str, default=None)
-        app_ps.add_argument("name",
-                             help="the name of the appendix to edit",
-                             nargs=1, default=None, type=str)
-
-        # the make-default command
-        make_default_ps = sp.add_parser("make-default",
-                                        help="make a journal the default for showing")
-        make_default_ps.add_argument("journal-name",
-                                     help="the name of the journal",
-                                     nargs=1, default=None, type=str)
-
         args = vars(p.parse_args())
 
     return args
@@ -166,22 +149,6 @@ def read_config():
             defs[sec]["master_repo"] = cp.get(sec, "master_repo")
 
     return defs
-
-def set_default(name, param_file):
-    """ set the default in the config file """
-
-    if os.path.isfile(param_file):
-        cp = configparser.ConfigParser()
-        cp.optionxform = str
-        cp.read(param_file)
-
-        if not cp.has_section("main"):
-            cp.add_section("main")
-        cp.set("main", "default_journal", name)
-
-        with open(param_file, "w") as config_file:
-            cp.write(config_file)
-
 
 def main(args, defs):
     """ main interface """
@@ -237,10 +204,6 @@ def main(args, defs):
         date_string = args["date-time string"][0]
         entry_util.edit(nickname, date_string, defs)
 
-    elif action == "appendix":
-        name = args["name"][0]
-        entry_util.appendix(nickname, name, defs)
-
     elif action == "list":
         # options: number to list (optional)
         num = args["N"]
@@ -259,7 +222,6 @@ def main(args, defs):
         git_util.push(defs, nickname=nickname)
 
     elif action == "status":
-        apps = build_util.get_appendices(nickname, defs)
 
         if nickname in defs.keys():
             print("pyjournal")
@@ -267,20 +229,12 @@ def main(args, defs):
             print("  working directory: {}/journal-{}".format(defs[nickname]["working_path"], nickname))
             print("  master git repo: {}".format(defs[nickname]["master_repo"], nickname))
             print(" ")
-            if not len(apps) == 0:
-                print("  appendices: ")
-                for a in apps:
-                    print("    {}".format(a))
-                print(" ")
 
         print("known journals:")
         for k in defs.keys():
             if k in ["main", "default_journal", "param_file", "image_dir"]:
                 continue
             print("  {}".format(k))
-
-    elif action == "make-default":
-        set_default(args["journal-name"][0], defs["param_file"])
 
     else:
         # we should never land here, because of the choices argument

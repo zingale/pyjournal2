@@ -51,15 +51,6 @@ def build(nickname, defs, show=0):
         f.write("\\chapter{{{}}}\n".format(y))
         f.write("\\input{{entries/{}.tex}}\n\n".format(y))
 
-    # now do the appendices
-    f.write("\\appendix\n")
-
-    app_dir = "{}/journal-{}/entries/appendices/".format(defs[nickname]["working_path"], nickname)
-
-    if os.path.isdir(app_dir):
-        for t in os.listdir(app_dir):
-            if t.endswith(".tex"):
-                f.write("\\input{{entries/appendices/{}}}\n\n".format(t))
 
     f.close()
 
