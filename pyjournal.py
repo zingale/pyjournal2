@@ -110,6 +110,8 @@ def read_config():
 
         defs["working_path"] = cp.get("main", "working_path")
         defs["master_repo"] = cp.get("main", "master_repo")
+        defs["nickname"] = cp.get("main", "nickname")
+        defs["username"] = cp.get("main", "username")
 
     return defs
 

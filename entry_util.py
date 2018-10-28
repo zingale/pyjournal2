@@ -9,12 +9,14 @@ import sys
 import shell_util
 
 figure_str = r"""
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.5\linewidth]{@figname@}
-\caption{\label{fig:@figlabel@} caption goes here}
-\end{figure}
+.. _@figlabel@:
+.. figure:: @figname@
+   :scale: 80%
+   :align: center
 
+   The caption goes here\centering
+
+.. reference this as :numref:`@figlabel@`
 """
 
 class _TermColors(object):
@@ -44,52 +46,51 @@ def success(ostr):
 # journal-specific routines
 #=============================================================================
 
-def get_entry_string():
-    now = datetime.datetime.now()
-    return str(now.replace(microsecond=0)).replace(" ", "_").replace(":", ".")
-
-
 def get_dir_string():
     now = datetime.date.today()
     return str(now)
 
+def get_entry_string():
+    now = datetime.datetime.now()
+    return str(now.replace(microsecond=0)).replace(" ", "_").replace(":", ".")
 
-def entry(nickname, images, defs, string=None):
+def entry(topic, images, defs, string=None):
 
     try: editor = os.environ["EDITOR"]
     except:
         editor = "emacs"
 
     # determine the filename
-    entry_id = get_entry_string()
     entry_dir = get_dir_string()
-    ofile = entry_id + ".tex"
+    ofile = entry_dir + ".rst"
 
     # determine the directory we place it in -- this is the form yyyy-mm-dd/
-    odir = "{}/journal-{}/entries/{}/".format(defs[nickname]["working_path"],
-                                              nickname,
-                                              entry_dir)
+    odir = "{}/journal-{}/source/{}/{}/".format(defs["working_path"],
+                                                defs["nickname"],
+                                                topic,
+                                                entry_dir)
 
     if not os.path.isdir(odir):
-        try: os.mkdir(odir)
+        try:
+            os.mkdir(odir)
         except:
             sys.exit("ERROR: unable to make directory {}".format(odir))
 
 
-    # create the entry file.  If we passed in a string, then write it
-    # too.
-    try: f = open(odir + ofile, "w")
+    # open (and create if necessary) the entry file.
+    # If we passed in a string, then write it too.
+    try:
+        f = open(os.path.join(odir, ofile), "a+")
     except:
-        sys.exit("ERROR: unable to open {}".format(odir + ofile))
+        sys.exit("ERROR: unable to open {}".format(os.path.join(odir, ofile)))
 
     if string is not None:
         f.write(string)
-    else:
-        f.write("% journal: {}\n".format(nickname))
-
 
     # if there are images, then copy them over and add the figure
     # headings to the entry
+    entry_id = get_entry_string()
+
     images_copied = []
     for im in images:
 
@@ -113,9 +114,9 @@ def entry(nickname, images, defs, string=None):
         images_copied.append(im_copy)
 
         # create a unique label for latex referencing
-        idx = im.lower().rfind(".jpg")
-        idx = max(idx, im.lower().rfind(".png"))
-        idx = max(idx, im.lower().rfind(".pdf"))
+        idx = im_copy.lower().rfind(".jpg")
+        idx = max(idx, im_copy.lower().rfind(".png"))
+        idx = max(idx, im_copy.lower().rfind(".pdf"))
 
         if idx >= 0:
             im0 = "{}:{}".format(entry_id, im[:idx])
@@ -126,14 +127,7 @@ def entry(nickname, images, defs, string=None):
             f.write("{}\n".format(
                 l.replace("@figname@", fname).replace("@figlabel@", im0).rstrip()))
 
-    # add the entry id as a LaTeX comment
-    f.write("\n\n% entry: {}".format(entry_id))
-
     f.close()
-
-    # get the hash for the file
-    hash_orig = hashlib.md5(open(odir + ofile, 'r').read().encode('utf-8')).hexdigest()
-
 
     # launch the editor specified in the EDITOR environment variable
     if string == None:
@@ -143,21 +137,6 @@ def entry(nickname, images, defs, string=None):
             prog = "{} {}/{}".format(editor, odir, ofile)
 
         stdout, stderr, rc = shell_util.run(prog)
-
-
-    # did the user actually make edits?
-    hash_new = hashlib.md5(open(odir + ofile, 'r').read().encode('utf-8')).hexdigest()
-
-    if string == None and len(images) == 0 and (hash_new == hash_orig):
-        # user didn't do anything interesting
-        answer = input("no input made -- add this to the journal? (y/N) ")
-        if answer.lower() != "y":
-            try: os.remove(odir + ofile)
-            except:
-                sys.exit("ERROR: unable to remove file -- entry aborted")
-
-            sys.exit("entry aborted")
-
 
     # commit the entry to the working git repo
     os.chdir(odir)
