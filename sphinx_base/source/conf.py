@@ -17,12 +17,16 @@
 # sys.path.insert(0, os.path.abspath('.'))
 
 import sphinx_rtd_theme
+import journal_info
+import datetime
 
 # -- Project information -----------------------------------------------------
 
+now = datatime.datatime.now()
+
 project = 'research journal'
-copyright = '2018, Michael Zingale'
-author = 'Michael Zingale'
+copyright = "{} {}".format(now.year, journal_info.username)
+author = journal_info.username
 
 # The short X.Y version
 version = ''
@@ -133,7 +137,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'researchjournal.tex', 'research journal Documentation',
-     'Michael Zingale', 'manual'),
+     journal_info.username, 'manual'),
 ]
 
 
