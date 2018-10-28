@@ -173,60 +173,6 @@ def entry(nickname, images, defs, string=None):
         stdout, stderr, rc = shell_util.run("git add " + im)
         stdout, stderr, rc = shell_util.run("git commit -m 'new image' " + im)
 
-    # helpful edit suggestion
-    print("entry created.  Use 'pyjournal.py edit {}' to edit this entry.".format(entry_id))
-
-
-def edit(nickname, date_string, defs):
-
-    if date_string == "last":
-        last = elist(nickname, 1, defs, print_out=False)
-        date_string = last[0][0]
-
-    # find the file corresponding to the date string
-    entry_dir = "{}/journal-{}/entries/".format(defs[nickname]["working_path"], nickname)
-
-    os.chdir(entry_dir)
-
-    # if we got the date string from the prompt, it may have a "_"
-    date_string = date_string.replace("_", " ")
-
-    try: d, t = date_string.split(" ")
-    except:
-        sys.exit("invalid date string")
-
-    if not os.path.isdir(d):
-        sys.exit("entry directory does not exist")
-
-    file = "{}/{}_{}.tex".format(d, d, t)
-
-    if not os.path.isfile(file):
-        sys.exit("entry {} does not exist".format(file))
-
-    # open the file for appending
-    try: editor = os.environ["EDITOR"]
-    except:
-        editor = "emacs"
-
-    entry_id = get_entry_string()
-
-    try: f = open(file, "a+")
-    except:
-        sys.exit("ERROR: unable to open {}".format(file))
-
-    f.write("\n\n% entry edited: {}".format(entry_id))
-    f.close()
-
-    if editor == "emacs":
-        prog = "emacs -nw {}".format(file)
-    else:
-        prog = "{} {}".format(editor, file)
-
-    stdout, stderr, rc = shell_util.run(prog)
-
-    # git commit any changes
-    stdout, stderr, rc = shell_util.run("git commit -m 'edited entry' " + file)
-
 
 def elist(nickname, num, defs, print_out=True):
 

@@ -60,93 +60,59 @@ def get_args():
         # the entry command
         entry_ps = sp.add_parser("entry",
                                  help="add a new entry, with optional images")
+        entry_ps.add_argument("topic", help="the name of the topic to add to",
+                              nargs="*", default="main", type=str)
         entry_ps.add_argument("images", help="images to include as figures in the entry",
                               nargs="*", default=None, type=str)
-        entry_ps.add_argument("-n", metavar="nickname",
-                              help="nickname of the journal",
-                              type=str, default=None)
 
-        # the edit command
-        edit_ps = sp.add_parser("edit",
-                                help="edit an existing entry")
-        edit_ps.add_argument("date-time string",
-                             help="entry id to edit, in the form: yyyy-mm-dd hh.mm.ss or use 'last' to edit the last entry",
-                             nargs=1, default=None, type=str)
-        edit_ps.add_argument("-n", metavar="nickname",
-                             help="nickname of the journal",
-                             type=str, default=None)
 
         # the list command
         list_ps = sp.add_parser("list",
                                 help="list the recent entry id's and .tex file path for the last entries")
-        list_ps.add_argument("-n", metavar="nickname",
-                             help="nickname of the journal",
-                             type=str, default=None)
         list_ps.add_argument("-N", help="number of entries to list",
                              type=int, default=10)
 
         # the build command
         build_ps = sp.add_parser("build",
                                  help="build a PDF of the journal")
-        build_ps.add_argument("-n", metavar="nickname",
-                              help="nickname of the journal",
-                              type=str, default=None)
 
         # the pull command
         pull_ps = sp.add_parser("pull",
                                 help="pull from the remote journal" )
-        pull_ps.add_argument("-n", metavar="nickname",
-                             help="nickname of the journal",
-                             type=str, default=None)
 
         # the push command
         push_ps = sp.add_parser("push",
                                 help="push local changes to the remote journal")
-        push_ps.add_argument("-n", metavar="nickname",
-                             help="nickname of the journal",
-                             type=str, default=None)
 
         # the status command
         stat_ps = sp.add_parser("status",
                                 help="list the current journal information")
-        stat_ps.add_argument("-n", metavar="nickname",
-                             help="nickname of the journal",
-                             type=str, default=None)
 
         # the show command
         show_ps = sp.add_parser("show",
                                 help="build the PDF and launch a PDF viewer")
-        show_ps.add_argument("-n", metavar="nickname",
-                             help="nickname of the journal",
-                             type=str, default=None)
 
         args = vars(p.parse_args())
 
     return args
 
 def read_config():
-    """ parse the .pyjournalrc file -- store the results in a dictionary
-        e.g., defs["nickname"]["working_path"] """
+    """ parse the .pyjournal2rc file -- store the results in a dictionary
+        e.g., defs["working_path"] """
     defs = {}
-    defs["param_file"] = os.path.expanduser("~") + "/.pyjournalrc"
+    defs["param_file"] = os.path.expanduser("~") + "/.pyjournal2rc"
     defs["image_dir"] = os.getcwd()
-    defs["default_journal"] = None
 
     if os.path.isfile(defs["param_file"]):
         cp = configparser.ConfigParser()
         cp.optionxform = str
         cp.read(defs["param_file"])
 
-        secs = cp.sections()
+        defs["working_path"] = cp.get("main", "working_path")
+        defs["master_repo"] = cp.get("main", "master_repo")
 
-        if "main" in secs:
-            secs.remove("main")
-            defs["default_journal"] = cp.get("main", "default_journal")
-
-        for sec in secs:
-            defs[sec] = {}
-            defs[sec]["working_path"] = cp.get(sec, "working_path")
-            defs[sec]["master_repo"] = cp.get(sec, "master_repo")
+    else:
+        sys.exit("Error: journal not setup, not .pyjournal2rc found")
 
     return defs
 
@@ -154,26 +120,6 @@ def main(args, defs):
     """ main interface """
 
     action = args["command"]
-
-    if action not in ["init", "connect"]:
-        journals = list(defs.keys())
-        journals.remove("param_file")
-        journals.remove("image_dir")
-        journals.remove("default_journal")
-
-        if len(journals) > 0:
-            if defs["default_journal"] == None:
-                default_nickname = journals[0]
-            else:
-                default_nickname = defs["default_journal"]
-
-        if "n" in args:
-            if args["n"] is not None:
-                nickname = args["n"]
-            else:
-                nickname = default_nickname
-        else:
-            nickname = default_nickname
 
     if action == "init":
         nickname = args["nickname"][0]
@@ -197,12 +143,8 @@ def main(args, defs):
 
     elif action == "entry":
         images = args["images"]
-        entry_util.entry(nickname, images, defs)
-
-    elif action == "edit":
-        # options: date-string
-        date_string = args["date-time string"][0]
-        entry_util.edit(nickname, date_string, defs)
+        topic = args["topic"]
+        entry_util.entry(topic, images, defs)
 
     elif action == "list":
         # options: number to list (optional)
@@ -223,18 +165,10 @@ def main(args, defs):
 
     elif action == "status":
 
-        if nickname in defs.keys():
-            print("pyjournal")
-            print("  current journal: {}".format(nickname))
-            print("  working directory: {}/journal-{}".format(defs[nickname]["working_path"], nickname))
-            print("  master git repo: {}".format(defs[nickname]["master_repo"], nickname))
-            print(" ")
-
-        print("known journals:")
-        for k in defs.keys():
-            if k in ["main", "default_journal", "param_file", "image_dir"]:
-                continue
-            print("  {}".format(k))
+        print("pyjournal")
+        print("  working directory: {}/journal-{}".format(defs["working_path"], nickname))
+        print("  master git repo: {}".format(defs["master_repo"], nickname))
+        print(" ")
 
     else:
         # we should never land here, because of the choices argument
