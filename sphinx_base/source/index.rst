@@ -5,6 +5,7 @@ Research Journal
    :maxdepth: 2
    :caption: Contents:
 
+   main/main
 
 Indices and tables
 ==================

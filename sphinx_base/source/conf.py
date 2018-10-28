@@ -22,7 +22,7 @@ import datetime
 
 # -- Project information -----------------------------------------------------
 
-now = datatime.datatime.now()
+now = datetime.datetime.now()
 
 project = 'research journal'
 copyright = "{} {}".format(now.year, journal_info.username)
