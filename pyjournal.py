@@ -7,16 +7,13 @@ a simple commandline-driven scientific journal in LaTeX managed by git
 from __future__ import print_function
 
 import argparse
-try: import ConfigParser as configparser
-except ImportError:
-    import configparser
+import configparser
 import os
 import sys
 
 import build_util
 import entry_util
 import git_util
-
 
 def get_args():
     """ parse the commandline arguments """
@@ -39,6 +36,8 @@ def get_args():
         # the init command
         init_ps = sp.add_parser("init", help="initialize a journal")
         init_ps.add_argument("nickname", help="name of the journal",
+                             nargs=1, default=None, type=str)
+        init_ps.add_argument("username", help="your name",
                              nargs=1, default=None, type=str)
         init_ps.add_argument("master-path",
                              help="path where we will store the master (bare) git repo",
@@ -102,6 +101,7 @@ def read_config():
     defs = {}
     defs["param_file"] = os.path.expanduser("~") + "/.pyjournal2rc"
     defs["image_dir"] = os.getcwd()
+    defs["module_dir"] = os.path.abspath(os.path.dirname(__file__))
 
     if os.path.isfile(defs["param_file"]):
         cp = configparser.ConfigParser()
@@ -110,9 +110,6 @@ def read_config():
 
         defs["working_path"] = cp.get("main", "working_path")
         defs["master_repo"] = cp.get("main", "master_repo")
-
-    else:
-        sys.exit("Error: journal not setup, not .pyjournal2rc found")
 
     return defs
 
@@ -123,8 +120,8 @@ def main(args, defs):
 
     if action == "init":
         nickname = args["nickname"][0]
+        username = args["username"][0]
         master_path = args["master-path"][0]
-
         working_path = args["working-path"]
         if working_path == None:
             working_path = master_path
@@ -132,7 +129,7 @@ def main(args, defs):
         master_path = os.path.normpath(os.path.expanduser(master_path))
         working_path = os.path.normpath(os.path.expanduser(working_path))
 
-        git_util.init(nickname, master_path, working_path, defs)
+        git_util.init(nickname, username, master_path, working_path, defs)
 
     elif action == "connect":
         master_repo = args["remote-git-repo"][0]

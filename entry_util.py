@@ -150,7 +150,7 @@ def entry(nickname, images, defs, string=None):
 
     if string == None and len(images) == 0 and (hash_new == hash_orig):
         # user didn't do anything interesting
-        answer = raw_input("no input made -- add this to the journal? (y/N) ")
+        answer = input("no input made -- add this to the journal? (y/N) ")
         if answer.lower() != "y":
             try: os.remove(odir + ofile)
             except:
@@ -158,9 +158,6 @@ def entry(nickname, images, defs, string=None):
 
             sys.exit("entry aborted")
 
-    # any tags?
-    #tags = find_tags(odir + ofile)
-    
 
     # commit the entry to the working git repo
     os.chdir(odir)
