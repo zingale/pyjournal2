@@ -118,7 +118,7 @@ def main(args, defs):
         username = args["username"][0]
         master_path = args["master-path"][0]
         working_path = args["working-path"]
-        if working_path == None:
+        if working_path is None:
             working_path = master_path
 
         master_path = os.path.normpath(os.path.expanduser(master_path))
@@ -154,8 +154,8 @@ def main(args, defs):
     elif action == "status":
 
         print("pyjournal")
-        print("  working directory: {}/journal-{}".format(defs["working_path"], nickname))
-        print("  master git repo: {}".format(defs["master_repo"], nickname))
+        print("  working directory: {}/journal-{}".format(defs["working_path"], defs["nickname"]))
+        print("  master git repo: {}".format(defs["master_repo"]))
         print(" ")
 
     else:
@@ -165,6 +165,6 @@ def main(args, defs):
 
 
 if __name__ == "__main__":
-    args = get_args()
-    defs = read_config()
-    main(args, defs)
+    targs = get_args()
+    tdefs = read_config()
+    main(targs, tdefs)

@@ -1,11 +1,15 @@
-import calendar
+"""This module controls building the journal from the entry sources"""
+
 import os
-import sys
 import webbrowser
 
 import shell_util
 
 def build(defs, show=0):
+    """build the journal.  This entails writing the TOC files that link to
+    the individual entries and then running the Sphinx make command
+
+    """
 
     source_dir = "{}/journal-{}/source/".format(defs["working_path"], defs["nickname"])
 
@@ -95,7 +99,7 @@ def build(defs, show=0):
     build_dir = "{}/journal-{}/".format(defs["working_path"], defs["nickname"])
     os.chdir(build_dir)
 
-    stdout, stderr, rc = shell_util.run("make html")
+    _, _, rc = shell_util.run("make html")
 
     if rc != 0:
         print("build may have been unsuccessful")

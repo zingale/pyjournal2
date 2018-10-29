@@ -1,14 +1,13 @@
-from __future__ import print_function
+"""This module controls writing an entry in the journal"""
 
 import datetime
-import hashlib
 import os
 import shutil
 import sys
 
 import shell_util
 
-figure_str = r"""
+FIGURE_STR = r"""
 .. _@figlabel@:
 .. figure:: @figname@
    :scale: 80%
@@ -19,19 +18,18 @@ figure_str = r"""
 .. reference this as :numref:`@figlabel@`
 """
 
-class _TermColors(object):
-    WARNING = '\033[93m'
-    SUCCESS = '\033[92m'
-    FAIL = '\033[91m'
-    BOLD = '\033[1m'
-    ENDC = '\033[0m'
+WARNING = '\033[93m'
+SUCCESS = '\033[92m'
+FAIL = '\033[91m'
+BOLD = '\033[1m'
+ENDC = '\033[0m'
 
 def warning(ostr):
     """
     Output a string to the terminal colored orange to indicate a
     warning
     """
-    print(_TermColors.WARNING + ostr + _TermColors.ENDC)
+    print(WARNING + ostr + ENDC)
 
 
 def success(ostr):
@@ -39,7 +37,7 @@ def success(ostr):
     Output a string to the terminal colored green to indicate
     success
     """
-    print(_TermColors.SUCCESS + ostr + _TermColors.ENDC)
+    print(SUCCESS + ostr + ENDC)
 
 
 #=============================================================================
@@ -47,16 +45,20 @@ def success(ostr):
 #=============================================================================
 
 def get_dir_string():
+    """get the new entry string in the form YYYY-MM-DD"""
     now = datetime.date.today()
     return str(now)
 
-def get_entry_string():
+def get_unique_string():
+    """get a full date time string"""
     now = datetime.datetime.now()
     return str(now.replace(microsecond=0)).replace(" ", "_").replace(":", ".")
 
 def entry(topic, images, defs, string=None):
+    """create an entry"""
 
-    try: editor = os.environ["EDITOR"]
+    try:
+        editor = os.environ["EDITOR"]
     except:
         editor = "emacs"
 
@@ -96,7 +98,7 @@ def entry(topic, images, defs, string=None):
 
     # if there are images, then copy them over and add the figure
     # headings to the entry
-    entry_id = get_entry_string()
+    unique_id = get_unique_string()
 
     images_copied = []
     for im in images:
@@ -107,14 +109,15 @@ def entry(topic, images, defs, string=None):
         dest = odir
 
         if os.path.isfile("{}/{}".format(dest, im)):
-            im_copy = "{}_{}".format(entry_id.replace(".", "_"), im)
+            im_copy = "{}_{}".format(unique_id.replace(".", "_"), im)
         else:
             im_copy = im
 
         dest = "{}/{}".format(dest, im_copy)
 
         # copy it
-        try: shutil.copy(src, dest)
+        try:
+            shutil.copy(src, dest)
         except:
             sys.exit("ERROR: unable to copy image {} to {}".format(src, dest))
 
@@ -126,18 +129,18 @@ def entry(topic, images, defs, string=None):
         idx = max(idx, im_copy.lower().rfind(".pdf"))
 
         if idx >= 0:
-            im0 = "{}:{}".format(entry_id, im[:idx])
+            im0 = "{}:{}".format(unique_id, im[:idx])
 
         fname = "entries/{}/{}".format(entry_dir, im_copy)
         # add the figure text
-        for l in figure_str.split("\n"):
+        for l in FIGURE_STR.split("\n"):
             f.write("{}\n".format(
                 l.replace("@figname@", fname).replace("@figlabel@", im0).rstrip()))
 
     f.close()
 
     # launch the editor specified in the EDITOR environment variable
-    if string == None:
+    if string is None:
         if editor == "emacs":
             prog = "emacs -nw {}/{}".format(odir, ofile)
         else:

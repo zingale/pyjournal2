@@ -1,4 +1,4 @@
-from __future__ import print_function
+"""routines to managing the git interactions for the journal"""
 
 import os
 import re
@@ -31,19 +31,21 @@ def init(nickname, username, master_path, working_path, defs):
 
     # create the bare git repo
     git_master = "{}/journal-{}.git".format(master_path, nickname)
-    try: os.mkdir(git_master)
+    try:
+        os.mkdir(git_master)
     except:
         sys.exit("ERROR: unable to create a directory in {}".format(master_path))
 
     os.chdir(git_master)
-    stdout, stderr, rc = shell_util.run("git init --bare")
+    shell_util.run("git init --bare")
 
     # create the local working copy
-    try: os.chdir(working_path)
+    try:
+        os.chdir(working_path)
     except:
         sys.exit("ERROR: unable to change to {}".format(working_path))
 
-    stdout, stderr, rc = shell_util.run("git clone " + git_master)
+    shell_util.run("git clone " + git_master)
 
     # create the initial directory structure
     working_journal = "{}/journal-{}".format(working_path, nickname)
@@ -64,12 +66,12 @@ def init(nickname, username, master_path, working_path, defs):
 
     # create the .pyjournal2rc file
     try:
-       with open(defs["param_file"], "w") as f:
-           f.write("[{}]\n".format("main"))
-           f.write("master_repo = {}\n".format(git_master))
-           f.write("working_path = {}\n".format(working_path))
-           f.write("nickname = {}\n".format(nickname))
-           f.write("username = {}\n".format(username))
+        with open(defs["param_file"], "w") as f:
+            f.write("[{}]\n".format("main"))
+            f.write("master_repo = {}\n".format(git_master))
+            f.write("working_path = {}\n".format(working_path))
+            f.write("nickname = {}\n".format(nickname))
+            f.write("username = {}\n".format(username))
     except:
         sys.exit("ERROR: unable to open {} for appending".format(defs["param_file"]))
 
@@ -90,12 +92,13 @@ def init(nickname, username, master_path, working_path, defs):
     shell_util.run("git push origin master")
 
 def connect(master_repo, working_path, defs):
+    """connect to an existing journal on git on another machine"""
 
     # get the nickname from the master repo name
     re_name = r"journal-(.*).git"
     a = re.search(re_name, master_repo)
 
-    if not a == None:
+    if a is not None:
         nickname = a.group(1)
     else:
         sys.exit("ERROR: the remote-git-repo should be of the form: ssh://machine/dir/journal-nickname.git")
@@ -105,17 +108,19 @@ def connect(master_repo, working_path, defs):
         sys.exit("ERROR: nickname already exists")
 
     # git clone the bare repo at master_repo into the working path
-    try: os.chdir(working_path)
+    try:
+        os.chdir(working_path)
     except:
         sys.exit("ERROR: unable to switch to directory {}".format(working_path))
 
-    stdout, stderr, rc = shell_util.run("git clone " + master_repo)
-    if not rc == 0:
+    _, stderr, rc = shell_util.run("git clone " + master_repo)
+    if rc != 0:
         print(stderr)
         sys.exit("ERROR: something went wrong with the git clone")
 
     # create (or add to) the .pyjournalrc file
-    try: f = open(defs["param_file"], "a+")
+    try:
+        f = open(defs["param_file"], "a+")
     except:
         sys.exit("ERROR: unable to open {} for appending".format(defs["param_file"]))
 
@@ -132,19 +137,21 @@ def connect(master_repo, working_path, defs):
 #=============================================================================
 
 def pull(defs, nickname=None):
+    """pull the journal from the origin"""
 
     # switch to the working directory and pull from the master
-    if not nickname == None:
+    if nickname is not None:
         wd = "{}/journal-{}".format(defs[nickname]["working_path"], nickname)
     else:
         wd = "{}/todo_list".format(defs["working_path"])
 
-    try: os.chdir(wd)
+    try:
+        os.chdir(wd)
     except:
         sys.exit("ERROR: unable to switch to working directory: {}".format(wd))
 
     stdout, stderr, rc = shell_util.run("git pull")
-    if not rc == 0:
+    if rc != 0:
         print(stdout, stderr)
         sys.exit("ERROR: something went wrong with the git pull")
 
@@ -152,19 +159,21 @@ def pull(defs, nickname=None):
 
 
 def push(defs, nickname=None):
+    """push the journal to the origin"""
 
     # switch to the working directory and push to the master
-    if not nickname == None:
+    if nickname is not None:
         wd = "{}/journal-{}".format(defs[nickname]["working_path"], nickname)
     else:
         wd = "{}/todo_list".format(defs["working_path"])
 
-    try: os.chdir(wd)
+    try:
+        os.chdir(wd)
     except:
         sys.exit("ERROR: unable to switch to working directory: {}".format(wd))
 
-    stdout, stderr, rc = shell_util.run("git push")
-    if not rc == 0:
+    _, stderr, rc = shell_util.run("git push")
+    if rc != 0:
         print(stderr)
         sys.exit("ERROR: something went wrong with the git push")
 
