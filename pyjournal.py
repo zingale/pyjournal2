@@ -148,19 +148,19 @@ def main(args, defs):
     elif action == "list":
         # options: number to list (optional)
         num = args["N"]
-        entry_util.elist(nickname, num, defs)
+        entry_util.elist(num, defs)
 
     elif action == "build":
-        build_util.build(nickname, defs)
+        build_util.build(defs)
 
     elif action == "show":
-        build_util.build(nickname, defs, show=1)
+        build_util.build(defs, show=1)
 
     elif action == "pull":
-        git_util.pull(defs, nickname=nickname)
+        git_util.pull(defs)
 
     elif action == "push":
-        git_util.push(defs, nickname=nickname)
+        git_util.push(defs)
 
     elif action == "status":
 

@@ -1,87 +1,97 @@
 import calendar
 import os
 import sys
+import webbrowser
 
 import shell_util
 
-def build(nickname, defs, show=0):
+def build(defs, show=0):
 
-    entry_dir = "{}/journal-{}/entries/".format(defs[nickname]["working_path"], nickname)
+    source_dir = "{}/journal-{}/source/".format(defs["working_path"], defs["nickname"])
 
-    entries = []
-    years = []
+    topics = []
 
-    # get the list of directories in entries/
-    for d in os.listdir(entry_dir):
-        if os.path.isdir(entry_dir + d):
-            entries.append(d)
+    # get the list of directories in source/ -- these are the topics
+    for d in os.listdir(source_dir):
+        if os.path.isdir(os.path.join(source_dir, d)) and not d.startswith("_"):
+            topics.append(d)
 
-            y, m, d = d.split("-")
-            if not y in years:
-                years.append(y)
+    print("topics: ", topics)
+
+    # for each topic, we want to create a "topic.rst" that then has
+    # things subdivided by year-month, and that a
+    # "topic-year-month.rst" that includes the individual entries
+    for topic in topics:
+        tdir = os.path.join(source_dir, topic)
+        os.chdir(tdir)
+
+        # look over the directories here, they will be in the form YYYY-MM-DD
+        years = []
+        entries = []
+        for d in os.listdir(tdir):
+            if os.path.isdir(os.path.join(tdir, d)):
+                y, _, _ = d.split("-")
+                if y not in years:
+                    years.append(y)
+                entries.append(d)
+
+        years.sort()
+        entries.sort()
+        print(entries)
+
+        # we need to create ReST files of the form YYYY.rst.  These
+        # will each then contain the links to the entries for that
+        # year
+        for y in years:
+            y_entries = [q for q in entries if q.startswith(y)]
+
+            with open("{}.rst".format(y), "w") as yf:
+                yf.write("****\n")
+                yf.write("{}\n".format(y))
+                yf.write("****\n\n")
+
+                yf.write(".. toctree::\n")
+                yf.write("   :maxdepth: 2\n")
+                yf.write("   :caption: Contents:\n\n")
+
+                for entry in y_entries:
+                    yf.write("   {}/{}.rst\n".format(entry, entry))
+
+        # now write the topic.rst
+        with open("{}.rst".format(topic), "w") as tf:
+            tf.write(len(topic)*"*" + "\n")
+            tf.write("{}\n".format(topic))
+            tf.write(len(topic)*"*" + "\n")
+
+            tf.write(".. toctree::\n")
+            tf.write("   :maxdepth: 2\n")
+            tf.write("   :caption: Contents:\n\n")
+
+            for y in years:
+                tf.write("   {}.rst\n".format(y))
 
 
-    os.chdir(entry_dir)
+    # now write the index.rst
+    os.chdir(source_dir)
+    with open("index.rst", "w") as mf:
+        mf.write("Research Journal\n")
+        mf.write("================\n\n")
+        mf.write(".. toctree::\n")
+        mf.write("   :maxdepth: 2\n")
+        mf.write("   :caption: Contents:\n\n")
 
-    years.sort()
-    entries.sort()
+        for topic in topics:
+            mf.write("   {}/{}\n".format(topic, topic))
 
-    # years are chapters
-    try: f = open("chapters.tex", "w")
-    except:
-        sys.exit("ERROR: unable to create chapters.tex")
-
-
-    for y in years:
-        f.write("\\chapter{{{}}}\n".format(y))
-        f.write("\\input{{entries/{}.tex}}\n\n".format(y))
+        mf.write("\n")
+        mf.write("Indices and tables\n")
+        mf.write("==================\n\n")
+        mf.write("* :ref:`genindex`\n")
+        mf.write("* :ref:`modindex`\n")
+        mf.write("* :ref:`search`\n")
 
 
-    f.close()
-
-
-    # within each year, months are sections
-    for y in years:
-
-        try: f = open("{}.tex".format(y), "w")
-        except:
-            sys.exit("ERROR: unable to create chapters.tex")
-
-        current_month = None
-        current_day = None
-
-        for e in entries:
-            ytmp, m, d = e.split("-")
-            if not ytmp == y:
-                continue
-
-            if not m == current_month:
-                f.write("\\section{{{}}}\n".format(calendar.month_name[int(m)]))
-                current_month = m
-
-            tex = []
-            for t in os.listdir(e):
-                if t.endswith(".tex"):
-                    tex.append(t)
-
-            tex.sort()
-            for t in tex:
-                if not d == current_day:
-                    f.write("\\subsection{{{} {}}}\n".format(calendar.month_name[int(m)], d))
-                    current_day = d
-
-                f.write("\\HRule\\\\ \n")
-                idx = t.rfind(".tex")
-                tout = t[:idx].replace("_", " ")
-                f.write("{{\\bfseries {{\sffamily {} }} }}\\\\[0.5em] \n".format(tout))
-                f.write("\\input{{entries/{}/{}}}\n\n".format(e, t))
-                f.write("\\vskip 2em\n")
-
-            f.write("\n")
-
-        f.close()
-
-    # now do the latexing to get the PDF
+    # now do the building
     build_dir = "{}/journal-{}/".format(defs["working_path"], defs["nickname"])
     os.chdir(build_dir)
 
