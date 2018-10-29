@@ -60,7 +60,7 @@ def get_args():
         entry_ps = sp.add_parser("entry",
                                  help="add a new entry, with optional images")
         entry_ps.add_argument("topic", help="the name of the topic to add to",
-                              nargs="*", default="main", type=str)
+                              nargs="?", default="main", type=str)
         entry_ps.add_argument("images", help="images to include as figures in the entry",
                               nargs="*", default=None, type=str)
 
@@ -137,6 +137,7 @@ def main(args, defs):
         print(args)
         images = args["images"]
         topic = args["topic"]
+        print("in entry: ", images, topic)
         entry_util.entry(topic, images, defs)
 
     elif action == "build":

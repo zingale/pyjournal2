@@ -13,7 +13,7 @@ FIGURE_STR = r"""
    :scale: 80%
    :align: center
 
-   The caption goes here\centering
+   The caption goes here
 
 .. reference this as :numref:`@figlabel@`
 """
@@ -113,7 +113,7 @@ def entry(topic, images, defs, string=None):
         else:
             im_copy = im
 
-        dest = "{}/{}".format(dest, im_copy)
+        dest = os.path.join(dest, im_copy)
 
         # copy it
         try:
@@ -131,11 +131,10 @@ def entry(topic, images, defs, string=None):
         if idx >= 0:
             im0 = "{}:{}".format(unique_id, im[:idx])
 
-        fname = "entries/{}/{}".format(entry_dir, im_copy)
         # add the figure text
         for l in FIGURE_STR.split("\n"):
             f.write("{}\n".format(
-                l.replace("@figname@", fname).replace("@figlabel@", im0).rstrip()))
+                l.replace("@figname@", im_copy).replace("@figlabel@", im0).rstrip()))
 
     f.close()
 
