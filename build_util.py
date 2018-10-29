@@ -5,14 +5,14 @@ import webbrowser
 
 import shell_util
 
-def build(defs, show=0):
-    """build the journal.  This entails writing the TOC files that link to
-    the individual entries and then running the Sphinx make command
+def get_source_dir(defs):
+    """return the directory where we put the sources"""
+    return "{}/journal-{}/source/".format(defs["working_path"], defs["nickname"])
 
-    """
+def get_topics(defs):
+    """return a list of the currently known topics"""
 
-    source_dir = "{}/journal-{}/source/".format(defs["working_path"], defs["nickname"])
-
+    source_dir = get_source_dir(defs)
     topics = []
 
     # get the list of directories in source/ -- these are the topics
@@ -20,7 +20,26 @@ def build(defs, show=0):
         if os.path.isdir(os.path.join(source_dir, d)) and not d.startswith("_"):
             topics.append(d)
 
-    print("topics: ", topics)
+    return topics
+
+def create_topic(topic, defs):
+    """create a new topic directory"""
+
+    source_dir = get_source_dir(defs)
+    try:
+        os.mkdir(os.path.join(source_dir, topic))
+    except:
+        sys.error("unable to create a new topic")
+
+def build(defs, show=0):
+    """build the journal.  This entails writing the TOC files that link to
+    the individual entries and then running the Sphinx make command
+
+    """
+
+    source_dir = get_source_dir(defs)
+
+    topics = get_topics(defs)
 
     # for each topic, we want to create a "topic.rst" that then has
     # things subdivided by year-month, and that a
@@ -84,7 +103,7 @@ def build(defs, show=0):
         mf.write("   :maxdepth: 2\n")
         mf.write("   :caption: Contents:\n\n")
 
-        for topic in topics:
+        for topic in sorted(topics):
             mf.write("   {}/{}\n".format(topic, topic))
 
         mf.write("\n")

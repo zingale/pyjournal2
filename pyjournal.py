@@ -134,10 +134,18 @@ def main(args, defs):
         git_util.connect(master_repo, working_path, defs)
 
     elif action == "entry":
-        print(args)
         images = args["images"]
         topic = args["topic"]
-        print("in entry: ", images, topic)
+
+        # check if the topic exists.  If not, ask if we want to create it
+        topics = build_util.get_topics(defs)
+        if topic not in topics:
+            create = input("topic {} does not exist, create? [y]  ".format(topic))
+            if create == "":
+                create = "y"
+            if create.lower() == "y":
+                build_util.create_topic(topic, defs)
+
         entry_util.entry(topic, images, defs)
 
     elif action == "build":
