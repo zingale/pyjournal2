@@ -77,13 +77,20 @@ def entry(topic, images, defs, string=None):
             sys.exit("ERROR: unable to make directory {}".format(odir))
 
 
+    entry_file = os.path.join(odir, ofile)
+    if not os.path.isfile(entry_file):
+        header = len(entry_dir)*"*" + "\n" + "{}\n".format(entry_dir) + len(entry_dir)*"*" + "\n\n"
+    else:
+        header = ""
+
     # open (and create if necessary) the entry file.
     # If we passed in a string, then write it too.
     try:
-        f = open(os.path.join(odir, ofile), "a+")
+        f = open(entry_file, "a+")
     except:
         sys.exit("ERROR: unable to open {}".format(os.path.join(odir, ofile)))
 
+    f.write(header)
     if string is not None:
         f.write(string)
 
