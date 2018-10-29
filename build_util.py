@@ -4,18 +4,6 @@ import sys
 
 import shell_util
 
-def get_appendices(nickname, defs):
-
-    app_dir = "{}/journal-{}/entries/appendices/".format(defs[nickname]["working_path"], nickname)
-
-    app = []
-    if os.path.isdir(app_dir):
-        for t in os.listdir(app_dir):
-            if t.endswith(".tex"):
-                app.append(t.split(".")[0])
-    return app
-
-
 def build(nickname, defs, show=0):
 
     entry_dir = "{}/journal-{}/entries/".format(defs[nickname]["working_path"], nickname)
@@ -25,9 +13,6 @@ def build(nickname, defs, show=0):
 
     # get the list of directories in entries/
     for d in os.listdir(entry_dir):
-        if d.endswith("appendices"):
-            continue
-
         if os.path.isdir(entry_dir + d):
             entries.append(d)
 
@@ -96,30 +81,17 @@ def build(nickname, defs, show=0):
 
         f.close()
 
-
     # now do the latexing to get the PDF
-    build_dir = "{}/journal-{}/".format(defs[nickname]["working_path"], nickname)
+    build_dir = "{}/journal-{}/".format(defs["working_path"], defs["nickname"])
     os.chdir(build_dir)
 
-    stdout, stderr, rc = shell_util.run("pdflatex --halt-on-error journal.tex")
-    stdout, stderr, rc = shell_util.run("pdflatex --halt-on-error journal.tex")
-    stdout, stderr, rc = shell_util.run("makeindex journal")
-    stdout, stderr, rc = shell_util.run("pdflatex --halt-on-error journal.tex")
-    stdout, stderr, rc = shell_util.run("pdflatex --halt-on-error journal.tex")
+    stdout, stderr, rc = shell_util.run("make html")
 
-    # if we were not successful, then the PDF is not produced
-    # note: pdflatex does not seem to use stderr at all
-    pdf = os.path.normpath("{}/journal.pdf".format(build_dir))
-    if os.path.isfile(pdf):
-        print("journal is located at {}".format(pdf))
-    else:
-        print(stdout)
-        print("There were LaTeX errors")
-        print("Check the source in {}/entries/".format(build_dir))
-        print("be sure to 'git commit' to store any fixes")
-        sys.exit()
+    if rc != 0:
+        print("build may have been unsuccessful")
 
+    index = os.path.join(build_dir, "build/html/index.html")
 
-    # show it in a PDF viewer
+    # use webbrowser module
     if show == 1:
-        os.system("evince {} &".format(pdf))
+        webbrowser.open_new_tab(index)
