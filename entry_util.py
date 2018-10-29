@@ -155,33 +155,3 @@ def entry(topic, images, defs, string=None):
     for im in images_copied:
         stdout, stderr, rc = shell_util.run("git add " + im)
         stdout, stderr, rc = shell_util.run("git commit -m 'new image' " + im)
-
-
-def elist(nickname, num, defs, print_out=True):
-
-    entry_dir = "{}/journal-{}/entries/".format(defs[nickname]["working_path"], nickname)
-    entries = {}
-    for d in os.listdir(entry_dir):
-        if os.path.isdir(entry_dir + d):
-
-            edir = os.path.normpath("{}/{}".format(entry_dir, d))
-
-            for t in os.listdir(edir):
-                if t.endswith(".tex") and not "appendices" in edir:
-                    entries[t] = "{}/{}".format(edir, t)
-
-    e = list(entries.keys())
-    e.sort(reverse=True)
-
-    last_entries = []
-    for n in range(min(num, len(e))):
-        idx = e[n].rfind(".tex")
-        entry_id = e[n][:idx]
-        last_entries.append((entry_id, entries[e[n]]))
-
-    if print_out:
-        for e in last_entries:
-            print("{} : {}".format(e[0], e[1]))
-    else:
-        return last_entries
-

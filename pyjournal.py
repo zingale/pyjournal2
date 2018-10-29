@@ -25,7 +25,7 @@ def get_args():
     if len(sys.argv) == 1:  # the command name is first argument
         args = {"command": "entry",
                 "images": [],
-                "n": None}
+                "topic": "main"}
     else:
         p = argparse.ArgumentParser()
         sp = p.add_subparsers(title="subcommands",
@@ -63,13 +63,6 @@ def get_args():
                               nargs="*", default="main", type=str)
         entry_ps.add_argument("images", help="images to include as figures in the entry",
                               nargs="*", default=None, type=str)
-
-
-        # the list command
-        list_ps = sp.add_parser("list",
-                                help="list the recent entry id's and .tex file path for the last entries")
-        list_ps.add_argument("-N", help="number of entries to list",
-                             type=int, default=10)
 
         # the build command
         build_ps = sp.add_parser("build",
@@ -141,14 +134,10 @@ def main(args, defs):
         git_util.connect(master_repo, working_path, defs)
 
     elif action == "entry":
+        print(args)
         images = args["images"]
         topic = args["topic"]
         entry_util.entry(topic, images, defs)
-
-    elif action == "list":
-        # options: number to list (optional)
-        num = args["N"]
-        entry_util.elist(num, defs)
 
     elif action == "build":
         build_util.build(defs)
