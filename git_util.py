@@ -82,7 +82,7 @@ def init(nickname, username, master_path, working_path, defs):
 
     # create an initial entry saying "journal created"
     images = []
-    entry_util.entry("main", images, defs, string="journal created")
+    entry_util.entry("main", images, defs, string="journal created\n")
 
     # do a git add / push
     os.chdir(working_journal)

@@ -54,7 +54,7 @@ def get_unique_string():
     now = datetime.datetime.now()
     return str(now.replace(microsecond=0)).replace(" ", "_").replace(":", ".")
 
-def entry(topic, images, defs, string=None):
+def entry(topic, images, link_file, defs, string=None):
     """create an entry"""
 
     try:
@@ -100,10 +100,10 @@ def entry(topic, images, defs, string=None):
     # headings to the entry
     unique_id = get_unique_string()
 
-    images_copied = []
-    for im in images:
+    files_copied = []
+    for im in images + [link_file]:
 
-        # does an image by that name already live in the dest
+        # does an file by that name already live in the dest
         # directory?
         src = "{}/{}".format(defs["image_dir"], im)
         dest = odir
@@ -121,20 +121,25 @@ def entry(topic, images, defs, string=None):
         except:
             sys.exit("ERROR: unable to copy image {} to {}".format(src, dest))
 
-        images_copied.append(im_copy)
+        files_copied.append(im_copy)
 
-        # create a unique label for latex referencing
-        idx = im_copy.lower().rfind(".jpg")
-        idx = max(idx, im_copy.lower().rfind(".png"))
-        idx = max(idx, im_copy.lower().rfind(".pdf"))
+        if im in images:
+            # create a unique label for latex referencing
+            idx = im_copy.lower().rfind(".jpg")
+            idx = max(idx, im_copy.lower().rfind(".png"))
+            idx = max(idx, im_copy.lower().rfind(".pdf"))
 
-        if idx >= 0:
-            im0 = "{}:{}".format(unique_id, im[:idx])
+            if idx >= 0:
+                im0 = "{}:{}".format(unique_id, im[:idx])
 
-        # add the figure text
-        for l in FIGURE_STR.split("\n"):
-            f.write("{}\n".format(
-                l.replace("@figname@", im_copy).replace("@figlabel@", im0).rstrip()))
+            # add the figure text
+            for l in FIGURE_STR.split("\n"):
+                f.write("{}\n".format(
+                    l.replace("@figname@", im_copy).replace("@figlabel@", im0).rstrip()))
+
+        else:
+            # add the download directive
+            f.write(":download:`{} <{}>`\n\n".format(im_copy, im_copy))
 
     f.close()
 
@@ -154,6 +159,6 @@ def entry(topic, images, defs, string=None):
     stdout, stderr, rc = shell_util.run("git commit -m 'new entry' " + ofile)
 
     # commit any images too
-    for im in images_copied:
+    for im in files_copied:
         stdout, stderr, rc = shell_util.run("git add " + im)
         stdout, stderr, rc = shell_util.run("git commit -m 'new image' " + im)

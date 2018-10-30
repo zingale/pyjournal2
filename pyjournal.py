@@ -59,6 +59,9 @@ def get_args():
         # the entry command
         entry_ps = sp.add_parser("entry",
                                  help="add a new entry, with optional images")
+        entry_ps.add_argument("--link", metavar="link-files",
+                              help="files to link in the entry",
+                              type=str, default=None)
         entry_ps.add_argument("topic", help="the name of the topic to add to",
                               nargs="?", default="main", type=str)
         entry_ps.add_argument("images", help="images to include as figures in the entry",
@@ -136,6 +139,7 @@ def main(args, defs):
     elif action == "entry":
         images = args["images"]
         topic = args["topic"]
+        link_file = args["link"]
 
         # check if the topic exists.  If not, ask if we want to create it
         topics = build_util.get_topics(defs)
@@ -146,7 +150,7 @@ def main(args, defs):
             if create.lower() == "y":
                 build_util.create_topic(topic, defs)
 
-        entry_util.entry(topic, images, defs)
+        entry_util.entry(topic, images, link_file, defs)
 
     elif action == "build":
         build_util.build(defs)
