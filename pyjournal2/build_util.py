@@ -60,7 +60,6 @@ def build(defs, show=0):
 
         years.sort()
         entries.sort()
-        print(entries)
 
         # we need to create ReST files of the form YYYY.rst.  These
         # will each then contain the links to the entries for that

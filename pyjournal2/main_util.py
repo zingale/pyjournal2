@@ -18,7 +18,11 @@ def get_args(defs):
     # entry, and we don't take any arguments, and we don't do an
     # argparse
 
-    topics = build_util.get_topics(defs)
+    try:
+        topics = build_util.get_topics(defs)
+    except KeyError:
+        # we are doing init or connect, so there are no keys yet
+        topics = []
 
     if len(sys.argv) == 1:  # the command name is first argument
         args = {"command": "entry",
