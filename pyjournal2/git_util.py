@@ -123,10 +123,9 @@ def connect(master_repo, working_path, defs):
     try:
         with open(defs["param_file"], "w") as f:
             f.write("[{}]\n".format("main"))
-            f.write("master_repo = {}\n".format(git_master))
+            f.write("master_repo = {}\n".format(master_repo))
             f.write("working_path = {}\n".format(working_path))
             f.write("nickname = {}\n".format(nickname))
-            f.write("username = {}\n".format(username))
     except:
         sys.exit("ERROR: unable to open {} for appending".format(defs["param_file"]))
 
