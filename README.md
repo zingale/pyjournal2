@@ -11,16 +11,12 @@ Note: pyjournal2 requires python 3
 
 * Installing:
 
-  Simply clone the git repo and put the directory in your path.
-  Alternately, if you have a `~/bin/` directory, do:
-
   ```
-  ln -s ~/{pyjournal-path}/pyjournal.py ~/bin/
+  python3 setup.py install --user
   ```
 
-  For the simplest (and laziest) access, create an alias `pj` for
-  `pyjournal.py`
-
+  (omit the `--user` for a systemwide installation).  This will put the
+  `pyjournal.py` executable script in you system's path.
 
 * Starting:
 
