@@ -11,17 +11,27 @@ import pyjournal2.build_util as build_util
 import pyjournal2.entry_util as entry_util
 import pyjournal2.git_util as git_util
 
-def get_args():
+def get_args(defs):
     """ parse the commandline arguments """
 
     # short circuit -- if there are no arguments, then we default to
     # entry, and we don't take any arguments, and we don't do an
     # argparse
 
+    topics = build_util.get_topics(defs)
+
     if len(sys.argv) == 1:  # the command name is first argument
         args = {"command": "entry",
                 "images": [],
+                "link": None,
                 "topic": "main"}
+
+    elif len(sys.argv) == 2 and sys.argv[-1] in topics:
+        args = {"command": "entry",
+                "images": [],
+                "link": None,
+                "topic": sys.argv[-1]}
+
     else:
         p = argparse.ArgumentParser()
         sp = p.add_subparsers(title="subcommands",
