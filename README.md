@@ -104,6 +104,12 @@ Note: pyjournal2 requires python 3
     Note: if you just want to do an entry to the default topic with
     no images, you can simply type `pyjournal.py` without any arguments.
 
+    To create a new topic, simply do:
+    ```pyjournal entry new-topic-name```
+    you will then be prompted if you really want to create the new topic,
+    and if you answer yes, the editor will pop up with a blank entry
+    page in the new topic.
+
   - `pyjournal.py build`
 
     builds the journal Sphinx webpage
