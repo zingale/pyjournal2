@@ -5,8 +5,8 @@ import re
 import sys
 import shutil
 
-import entry_util
-import shell_util
+import pyjournal2.entry_util as entry_util
+import pyjournal2.shell_util as shell_util
 
 #=============================================================================
 # journal-specific routines
@@ -82,7 +82,8 @@ def init(nickname, username, master_path, working_path, defs):
 
     # create an initial entry saying "journal created"
     images = []
-    entry_util.entry("main", images, defs, string="journal created\n")
+    link_file = ""
+    entry_util.entry("main", images, link_file, defs, string="journal created\n")
 
     # do a git add / push
     os.chdir(working_journal)

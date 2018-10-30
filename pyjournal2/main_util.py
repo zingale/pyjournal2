@@ -1,19 +1,15 @@
-#!/usr/bin/env python3
-
 """
-a simple commandline-driven scientific journal in LaTeX managed by git
+main driver for the journal
 """
-
-from __future__ import print_function
 
 import argparse
 import configparser
 import os
 import sys
 
-import build_util
-import entry_util
-import git_util
+import pyjournal2.build_util as build_util
+import pyjournal2.entry_util as entry_util
+import pyjournal2.git_util as git_util
 
 def get_args():
     """ parse the commandline arguments """
@@ -181,9 +177,3 @@ def main(args, defs):
         # we should never land here, because of the choices argument
         # to actions in the argparser
         sys.exit("invalid action")
-
-
-if __name__ == "__main__":
-    targs = get_args()
-    tdefs = read_config()
-    main(targs, tdefs)

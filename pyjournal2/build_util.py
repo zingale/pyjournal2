@@ -3,7 +3,7 @@
 import os
 import webbrowser
 
-import shell_util
+import pyjournal2.shell_util as shell_util
 
 def get_source_dir(defs):
     """return the directory where we put the sources"""

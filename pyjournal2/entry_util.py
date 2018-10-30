@@ -5,7 +5,7 @@ import os
 import shutil
 import sys
 
-import shell_util
+import pyjournal2.shell_util as shell_util
 
 FIGURE_STR = r"""
 .. _@figlabel@:
@@ -116,30 +116,31 @@ def entry(topic, images, link_file, defs, string=None):
         dest = os.path.join(dest, im_copy)
 
         # copy it
-        try:
-            shutil.copy(src, dest)
-        except:
-            sys.exit("ERROR: unable to copy image {} to {}".format(src, dest))
+        if im != "":
+            try:
+                shutil.copy(src, dest)
+            except:
+                sys.exit("ERROR: unable to copy image {} to {}".format(src, dest))
 
-        files_copied.append(im_copy)
+            files_copied.append(im_copy)
 
-        if im in images:
-            # create a unique label for latex referencing
-            idx = im_copy.lower().rfind(".jpg")
-            idx = max(idx, im_copy.lower().rfind(".png"))
-            idx = max(idx, im_copy.lower().rfind(".pdf"))
+            if im in images:
+                # create a unique label for latex referencing
+                idx = im_copy.lower().rfind(".jpg")
+                idx = max(idx, im_copy.lower().rfind(".png"))
+                idx = max(idx, im_copy.lower().rfind(".pdf"))
 
-            if idx >= 0:
-                im0 = "{}:{}".format(unique_id, im[:idx])
+                if idx >= 0:
+                    im0 = "{}:{}".format(unique_id, im[:idx])
 
-            # add the figure text
-            for l in FIGURE_STR.split("\n"):
-                f.write("{}\n".format(
-                    l.replace("@figname@", im_copy).replace("@figlabel@", im0).rstrip()))
+                # add the figure text
+                for l in FIGURE_STR.split("\n"):
+                    f.write("{}\n".format(
+                        l.replace("@figname@", im_copy).replace("@figlabel@", im0).rstrip()))
 
-        else:
-            # add the download directive
-            f.write(":download:`{} <{}>`\n\n".format(im_copy, im_copy))
+            else:
+                # add the download directive
+                f.write(":download:`{} <{}>`\n\n".format(im_copy, im_copy))
 
     f.close()
 
