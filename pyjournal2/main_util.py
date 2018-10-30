@@ -92,7 +92,6 @@ def read_config():
         e.g., defs["working_path"] """
     defs = {}
     defs["param_file"] = os.path.expanduser("~") + "/.pyjournal2rc"
-    defs["image_dir"] = os.getcwd()
     defs["module_dir"] = os.path.abspath(os.path.dirname(__file__))
 
     if os.path.isfile(defs["param_file"]):

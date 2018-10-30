@@ -103,15 +103,17 @@ def entry(topic, images, link_file, defs, string=None):
     files_copied = []
     for im in images + [link_file]:
 
+        if im is None:
+            continue
+
         # does an file by that name already live in the dest
         # directory?
-        src = "{}/{}".format(defs["image_dir"], im)
+        src = im
         dest = odir
 
-        if os.path.isfile("{}/{}".format(dest, im)):
-            im_copy = "{}_{}".format(unique_id.replace(".", "_"), im)
-        else:
-            im_copy = im
+        im_copy = os.path.basename(im)
+        if os.path.isfile("{}/{}".format(dest, im_copy)):
+            im_copy = "{}_{}".format(unique_id.replace(".", "_"), im_copy)
 
         dest = os.path.join(dest, im_copy)
 
@@ -131,7 +133,7 @@ def entry(topic, images, link_file, defs, string=None):
                 idx = max(idx, im_copy.lower().rfind(".pdf"))
 
                 if idx >= 0:
-                    im0 = "{}:{}".format(unique_id, im[:idx])
+                    im0 = "{}:{}".format(unique_id, im_copy[:idx])
 
                 # add the figure text
                 for l in FIGURE_STR.split("\n"):
