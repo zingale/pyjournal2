@@ -1,17 +1,4 @@
--- need to create the abilty to add links for files (e.g. long PDFs)
-
-   pj entry --link long.pdf [topic [images]]
-
-   this will do
-
-   :download:`file.pdf <file.pdf>`
-
--- need to do the building of the sphinx stuff -- this means adding
-   to the main.rst
-
--- need to create a topic directory if one does not already exist
-   (with prompting)
-
+-- create a master index of the entries in date order (regardless of date)
 
 
 differences from old pyjournal:
