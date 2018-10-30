@@ -1,12 +1,13 @@
-# pyjournal
+# pyjournal2
 
-pyjournal is a commandline script written in python to create and
-manage a LaTeX-based scientific journal.  The journal is distributed
-(via `git`) so that we can access it from any machine we work on.  It
-is commandline driven to make the barrier-to-entry for creating a
-short entry minimal.  Entries are shown in date-order.
+pyjournal2 is a commandline script written in python to create and
+manage a Sphinx ReST-based scientific journal.  The journal is
+distributed (via `git`) so that we can access it from any machine we
+work on.  It is commandline driven to make the barrier-to-entry for
+creating a short entry minimal.  Entries are groups into topics and
+shown in date-order.
 
-Note: the current version of this works only for python 3
+Note: pyjournal2 requires python 3
 
 * Installing:
 
@@ -19,7 +20,7 @@ Note: the current version of this works only for python 3
 
   For the simplest (and laziest) access, create an alias `pj` for
   `pyjournal.py`
-  
+
 
 * Starting:
 
@@ -28,16 +29,16 @@ Note: the current version of this works only for python 3
     this initializes a bare git repo that will hold the journal data,
     creates the initial directory structure to hold the journal
     entries, and copies in the master journal.tex file.  It will also
-    add to (or create) a `.pyjournal` file with an entry for this
-	journal name (nickname).
+    add to (or create) a `.pyjournal2rc` file with an entry for this
+    journal name (nickname).
 
     `path/` should be an existing directory.  The journal master repo
 	will be created as a subdirectory under `path/` as a bare git
 	repo.  The working clone that we interact with is placed there
 	too, unless we specify the optional `working-path` argument.
-    
+
     The `git` operations that take place under the hood are:
-    
+
       - Creating a bare repo for others to clone to/from:
 
         ```
@@ -45,7 +46,7 @@ Note: the current version of this works only for python 3
         cd path/nickname.git
         git init --bare
         ```
-     
+
       - Creating the working directory that we will interact with:
 
         ```
@@ -53,13 +54,6 @@ Note: the current version of this works only for python 3
         git clone path/nicknmae
         ```
 
-    The contents of the `.pyjournal` are
-
-    ```
-    [nickname]
-    master_repo = /path/nickname.git
-    working_path = /working-path/
-    ```
 
   - `pyjournal.py connect ssh://remote-machine:/git-path/journal-nickname.git local-path`
 
@@ -71,15 +65,15 @@ Note: the current version of this works only for python 3
     Note that for the remote git repo is specified as the complete path
     (including the `ssh://` prefix) to the `.git` bare repo.  The nickname
     for the journal is taken from the repo name.
-    
+
     Only a working repo is stored locally (created though a `git clone`).
     In this case, your `.pyjournalrc` will look like:
-    
+
     ```
     [nickname]
     master_path = ssh://remote-machine:/git-path/git-repo.git
     working_path = local-path/
-    ```  
+    ```
 
 
 * Directory structure:
@@ -87,20 +81,21 @@ Note: the current version of this works only for python 3
   ```
   journal-nickname/
 
-    entries/
+
+   main/
       yyyy-mm-dd/
-        yyy-mm-dd-hh-ss.tex
+        yyy-mm-dd-hh-ss.rst
         ...
       yyyy-mm-dd/
 	    ...
-    journal.tex
+
   ```
 
 
 * Day-to-day use:
 
   - `pyjournal.py entry [-n nickname] [XXX [YYY ...]]`
-  
+
     adds an entry to the journal (optionally named "nickname"). `XXX`,
     `YYY`, and `ZZZ` are optional names of images that will
     automatically be added as figures to the new entry
@@ -147,7 +142,7 @@ Note: the current version of this works only for python 3
 
     pushes any changes in the local journal to the remote (git bare
     repo) version
- 
+
 
 * Hashtags
 
@@ -155,7 +150,7 @@ Note: the current version of this works only for python 3
   tag in the journal entry.  When you build the journal, there will
   be an index of hash tags at the end of the journal with links
   to the pages.  This can let you organize entries into topics.
-  
+
 
 
 
