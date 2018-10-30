@@ -102,11 +102,11 @@ def connect(master_repo, working_path, defs):
     if a is not None:
         nickname = a.group(1)
     else:
-        sys.exit("ERROR: the remote-git-repo should be of the form: ssh://machine/dir/journal-nickname.git")
+        sys.exit("ERROR: the remote-git-repo should be of the form: machine:/dir/journal-nickname.git")
 
-    # make sure that a journal with this nickname doesn't already exist
-    if nickname in defs.keys():
-        sys.exit("ERROR: nickname already exists")
+    # make sure that a journal does not already exist
+    if os.path.isfile(defs["param_file"]):
+        sys.exit("ERROR: a journal already exists")
 
     # git clone the bare repo at master_repo into the working path
     try:
@@ -121,16 +121,14 @@ def connect(master_repo, working_path, defs):
 
     # create (or add to) the .pyjournalrc file
     try:
-        f = open(defs["param_file"], "a+")
+        with open(defs["param_file"], "w") as f:
+            f.write("[{}]\n".format("main"))
+            f.write("master_repo = {}\n".format(git_master))
+            f.write("working_path = {}\n".format(working_path))
+            f.write("nickname = {}\n".format(nickname))
+            f.write("username = {}\n".format(username))
     except:
         sys.exit("ERROR: unable to open {} for appending".format(defs["param_file"]))
-
-    f.write("[{}]\n".format(nickname))
-    f.write("master_repo = {}\n".format(master_repo))
-    f.write("working_path = {}\n".format(working_path))
-    f.write("\n")
-    f.close()
-
 
 
 #=============================================================================
@@ -140,11 +138,7 @@ def connect(master_repo, working_path, defs):
 def pull(defs, nickname=None):
     """pull the journal from the origin"""
 
-    # switch to the working directory and pull from the master
-    if nickname is not None:
-        wd = "{}/journal-{}".format(defs[nickname]["working_path"], nickname)
-    else:
-        wd = "{}/todo_list".format(defs["working_path"])
+    wd = "{}/journal-{}".format(defs["working_path"], defs["nickname"])
 
     try:
         os.chdir(wd)
@@ -163,10 +157,7 @@ def push(defs, nickname=None):
     """push the journal to the origin"""
 
     # switch to the working directory and push to the master
-    if nickname is not None:
-        wd = "{}/journal-{}".format(defs[nickname]["working_path"], nickname)
-    else:
-        wd = "{}/todo_list".format(defs["working_path"])
+    wd = "{}/journal-{}".format(defs["working_path"], defs["nickname"])
 
     try:
         os.chdir(wd)
