@@ -54,7 +54,7 @@ def init(nickname, username, master_path, working_path, defs):
         source_dir = os.path.abspath(os.path.join(defs["module_dir"], "sphinx_base/source"))
         shutil.copytree(source_dir, os.path.join(working_journal, "source"))
         shutil.copy(os.path.join(defs["module_dir"], "sphinx_base/Makefile"),
-                    working_journal)
+                working_journal)
     except:
         sys.exit("ERROR: unable to create initial directory structure")
 

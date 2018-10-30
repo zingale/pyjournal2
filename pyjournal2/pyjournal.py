@@ -166,8 +166,14 @@ def main(args, defs):
 
     elif action == "status":
 
-        print("pyjournal")
-        print("  working directory: {}/journal-{}".format(defs["working_path"], defs["nickname"]))
+        print("pyjournal2")
+        try:
+            wp = defs["working_path"]
+            nickname = defs["nickname"]
+        except KeyError:
+            sys.exit("Error: no journal found")
+
+        print("  working directory: {}/journal-{}".format(wp, nickname))
         print("  master git repo: {}".format(defs["master_repo"]))
         print(" ")
 
