@@ -117,6 +117,7 @@ def build(defs, show=0):
     build_dir = "{}/journal-{}/".format(defs["working_path"], defs["nickname"])
     os.chdir(build_dir)
 
+    _, _, rc = shell_util.run("make clean")
     _, _, rc = shell_util.run("make html")
 
     if rc != 0:
