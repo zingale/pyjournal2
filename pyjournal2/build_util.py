@@ -99,7 +99,7 @@ def build(defs, show=0):
         mf.write("Research Journal\n")
         mf.write("================\n\n")
         mf.write(".. toctree::\n")
-        mf.write("   :maxdepth: 2\n")
+        mf.write("   :maxdepth: 1\n")
         mf.write("   :caption: Contents:\n\n")
 
         for topic in sorted(topics):
