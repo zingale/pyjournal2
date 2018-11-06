@@ -18,6 +18,9 @@ FIGURE_STR = r"""
 .. reference this as :numref:`@figlabel@`
 """
 
+SYMBOLS = r"""
+.. special characters: αβγδεζηθικλμνξοπρστυφχψω ΓΔΘΛΞΠΣΦΨΩ —"""
+
 WARNING = '\033[93m'
 SUCCESS = '\033[92m'
 FAIL = '\033[91m'
@@ -81,7 +84,8 @@ def entry(topic, images, link_file, defs, string=None):
 
     entry_file = os.path.join(odir, ofile)
     if not os.path.isfile(entry_file):
-        header = len(entry_dir)*"*" + "\n" + "{}\n".format(entry_dir) + len(entry_dir)*"*" + "\n\n"
+        header = len(entry_dir)*"*" + "\n" + "{}\n".format(entry_dir) + len(entry_dir)*"*" + "\n"
+        header += SYMBOLS + "\n\n"
     else:
         header = ""
 
