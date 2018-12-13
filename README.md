@@ -101,11 +101,22 @@ Note: pyjournal2 requires python 3
     will be copied into the journal and a Sphinx figure directive will
     be setup for you when the entry pops up in your editor.
 
-    Note: if you just want to do an entry to the default topic with
-    no images, you can simply type `pyjournal.py` without any arguments.
+    There is a single entry per day for each topic, so running `entry`
+    again will allow you to continue editing the same entry.
+
+    Some shortcuts exist for entries:
+
+      * if you just want to do an entry to the main topic with no
+        images, you can simply type `pyjournal.py` without any
+        arguments.
+
+      * if you want to create an entry in an existing topic, you can
+        just do `pyjournal.py topic`, omitting the word `entry`.
 
     To create a new topic, simply do:
+
     ```pyjournal entry new-topic-name```
+
     you will then be prompted if you really want to create the new topic,
     and if you answer yes, the editor will pop up with a blank entry
     page in the new topic.
