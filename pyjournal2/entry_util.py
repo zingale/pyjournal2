@@ -84,7 +84,7 @@ def entry(topic, images, link_file, defs, string=None):
 
     entry_file = os.path.join(odir, ofile)
     if not os.path.isfile(entry_file):
-        header = len(entry_dir)*"*" + "\n" + "{}\n".format(entry_dir) + len(entry_dir)*"*" + "\n"
+        header = len(entry_dir)*"=" + "\n" + "{}\n".format(entry_dir) + len(entry_dir)*"=" + "\n"
         header += SYMBOLS + "\n\n"
     else:
         header = ""
