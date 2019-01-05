@@ -19,7 +19,8 @@ FIGURE_STR = r"""
 """
 
 SYMBOLS = r"""
-.. special characters: αβγδεζηθικλμνξοπρστυφχψω ΓΔΘΛΞΠΣΦΨΩ —"""
+.. special characters: αβγδεζηθικλμνξοπρστυφχψω ΓΔΘΛΞΠΣΦΨΩ —
+.. you can add an entry to the index via '.. index:: key'"""
 
 WARNING = '\033[93m'
 SUCCESS = '\033[92m'
