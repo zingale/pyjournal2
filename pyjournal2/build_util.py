@@ -22,6 +22,32 @@ def get_topics(defs):
 
     return topics
 
+def get_topic_entries(topic, defs):
+
+    cwd = os.getcwd()
+
+    source_dir = get_source_dir(defs)
+    tdir = os.path.join(source_dir, topic)
+
+    os.chdir(tdir)
+
+    # look over the directories here, they will be in the form YYYY-MM-DD
+    years = []
+    entries = []
+    for d in os.listdir(tdir):
+        if os.path.isdir(os.path.join(tdir, d)):
+            y, _, _ = d.split("-")
+            if y not in years:
+                years.append(y)
+            entries.append(d)
+
+    years.sort()
+    entries.sort()
+
+    os.chdir(cwd)
+
+    return years, entries
+
 def create_topic(topic, defs):
     """create a new topic directory"""
 
@@ -45,21 +71,9 @@ def build(defs, show=0):
     # things subdivided by year-month, and that a
     # "topic-year-month.rst" that includes the individual entries
     for topic in topics:
+        years, entries = get_topic_entries(topic, defs)
         tdir = os.path.join(source_dir, topic)
         os.chdir(tdir)
-
-        # look over the directories here, they will be in the form YYYY-MM-DD
-        years = []
-        entries = []
-        for d in os.listdir(tdir):
-            if os.path.isdir(os.path.join(tdir, d)):
-                y, _, _ = d.split("-")
-                if y not in years:
-                    years.append(y)
-                entries.append(d)
-
-        years.sort()
-        entries.sort()
 
         # we need to create ReST files of the form YYYY.rst.  These
         # will each then contain the links to the entries for that

@@ -58,7 +58,7 @@ def get_unique_string():
     now = datetime.datetime.now()
     return str(now.replace(microsecond=0)).replace(" ", "_").replace(":", ".")
 
-def entry(topic, images, link_file, defs, string=None):
+def entry(topic, images, link_file, defs, string=None, use_date=None):
     """create an entry"""
 
     try:
@@ -67,7 +67,10 @@ def entry(topic, images, link_file, defs, string=None):
         editor = "emacs"
 
     # determine the filename
-    entry_dir = get_dir_string()
+    if use_date is not None:
+        entry_dir = use_date
+    else:
+        entry_dir = get_dir_string()
     ofile = entry_dir + ".rst"
 
     # determine the directory we place it in -- this is the form yyyy-mm-dd/

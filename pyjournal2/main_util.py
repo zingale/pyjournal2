@@ -77,6 +77,17 @@ def get_args(defs):
         entry_ps.add_argument("images", help="images to include as figures in the entry",
                               nargs="*", default=None, type=str)
 
+        # the continue command
+        cont_ps = sp.add_parser("continue",
+                                help="continue working on the last entry (from a different day), with optional images")
+        cont_ps.add_argument("--link", metavar="link-files",
+                             help="files to link in the entry",
+                             type=str, default=None)
+        cont_ps.add_argument("topic", help="the name of the topic to add to",
+                             nargs="?", default="main", type=str)
+        cont_ps.add_argument("images", help="images to include as figures in the entry",
+                             nargs="*", default=None, type=str)
+
         # the build command
         build_ps = sp.add_parser("build",
                                  help="build a PDF of the journal")
@@ -163,6 +174,21 @@ def main(args, defs):
                 build_util.create_topic(topic, defs)
 
         entry_util.entry(topic, images, link_file, defs)
+
+    elif action == "continue":
+        # this is basically the same as entry, but we pass in the name
+        # of the last entry for this topic and start from there.  This
+        # is only necessary if we are continuing an entry from a
+        # previous day.
+
+        images = args["images"]
+        topic = args["topic"]
+        link_file = args["link"]
+
+        # get the entry id of the last entry for this topic
+        _, entries = build_util.get_topic_entries(topic, defs)
+
+        entry_util.entry(topic, images, link_file, defs, use_date=entries[-1])
 
     elif action == "build":
         build_util.build(defs)
