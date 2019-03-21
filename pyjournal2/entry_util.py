@@ -146,7 +146,7 @@ def entry(topic, images, link_file, defs, string=None, use_date=None):
                 # add the figure text
                 for l in FIGURE_STR.split("\n"):
                     f.write("{}\n".format(
-                        l.replace("@figname@", im_copy).replace("@figlabel@", im0).rstrip()))
+                        l.replace("@figname@", "/{}/{}/{}".format(topic, entry_dir, im_copy)).replace("@figlabel@", im0).rstrip()))
 
             else:
                 # add the download directive
