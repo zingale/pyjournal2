@@ -150,7 +150,7 @@ def entry(topic, images, link_file, defs, string=None, use_date=None):
 
             else:
                 # add the download directive
-                f.write(":download:`{} <{}>`\n\n".format(im_copy, im_copy))
+                f.write(":download:`{} </{}/{}/{}>`\n\n".format(im_copy, topic, entry_dir, im_copy))
 
     f.close()
 
