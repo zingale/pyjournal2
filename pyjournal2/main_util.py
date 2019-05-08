@@ -24,6 +24,11 @@ def get_args(defs):
         # we are doing init or connect, so there are no keys yet
         topics = []
 
+    if not os.path.isfile(defs["param_file"]):
+        if len(sys.argv) == 1 or sys.argv[1] not in ["init", "connect"]:
+            print("pyjournal is not initialized")
+            sys.exit()
+
     if len(sys.argv) == 1:  # the command name is first argument
         args = {"command": "entry",
                 "images": [],
