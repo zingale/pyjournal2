@@ -86,25 +86,24 @@ def build(defs, show=0):
                 yf.write("{}\n".format(y))
                 yf.write("****\n\n")
 
-                yf.write(".. toctree::\n")
-                yf.write("   :maxdepth: 2\n")
-                yf.write("   :caption: Contents:\n\n")
+                # yf.write(".. toctree::\n")
+                # yf.write("   :maxdepth: 2\n")
+                # yf.write("   :caption: Contents:\n\n")
+
+                # for entry in y_entries:
+                #     yf.write("   {}/{}.rst\n".format(entry, entry))
 
                 for entry in y_entries:
-                    yf.write("   {}/{}.rst\n".format(entry, entry))
+                    yf.write(".. include:: {}/{}.rst\n".format(entry, entry))
 
         # now write the topic.rst
         with open("{}.rst".format(topic), "w") as tf:
-            tf.write(len(topic)*"*" + "\n")
+            tf.write(len(topic)*"#" + "\n")
             tf.write("{}\n".format(topic))
-            tf.write(len(topic)*"*" + "\n")
-
-            tf.write(".. toctree::\n")
-            tf.write("   :maxdepth: 2\n")
-            tf.write("   :caption: Contents:\n\n")
+            tf.write(len(topic)*"#" + "\n")
 
             for y in years:
-                tf.write("   {}.rst\n".format(y))
+                tf.write(".. include:: {}.rst\n".format(y))
 
 
     # now write the index.rst

@@ -88,7 +88,7 @@ def entry(topic, images, link_file, defs, string=None, use_date=None):
 
     entry_file = os.path.join(odir, ofile)
     if not os.path.isfile(entry_file):
-        header = len(entry_dir)*"*" + "\n" + "{}\n".format(entry_dir) + len(entry_dir)*"*" + "\n"
+        header = len(entry_dir)*"=" + "\n" + "{}\n".format(entry_dir) + len(entry_dir)*"=" + "\n"
         header += SYMBOLS + "\n\n"
     else:
         header = ""
@@ -148,11 +148,11 @@ def entry(topic, images, link_file, defs, string=None, use_date=None):
                 # add the figure text
                 for l in FIGURE_STR.split("\n"):
                     f.write("{}\n".format(
-                        l.replace("@figname@", im_copy).replace("@figlabel@", im0).rstrip()))
+                        l.replace("@figname@", "/{}/{}/{}".format(topic, entry_dir, im_copy)).replace("@figlabel@", im0).rstrip()))
 
             else:
                 # add the download directive
-                f.write(":download:`{} <{}>`\n\n".format(im_copy, im_copy))
+                f.write(":download:`{} </{}/{}/{}>`\n\n".format(im_copy, topic, entry_dir, im_copy))
 
     f.close()
 
