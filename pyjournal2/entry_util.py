@@ -142,6 +142,8 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
 
                 if idx >= 0:
                     im0 = "{}:{}".format(unique_id, im_copy[:idx])
+                else:
+                    sys.exit("unsupported image type -- try creating a link instead")
 
                 # add the figure text
                 for l in FIGURE_STR.split("\n"):
