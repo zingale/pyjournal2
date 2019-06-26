@@ -82,6 +82,11 @@ def get_args(defs):
         entry_ps.add_argument("images", help="images to include as figures in the entry",
                               nargs="*", default=None, type=str)
 
+
+        # the todo command
+        todo_ps = sp.add_parser("todo",
+                                help="edit the todo list")
+
         # the continue command
         cont_ps = sp.add_parser("continue",
                                 help="continue working on the last entry (from a different day), with optional images")
@@ -182,6 +187,13 @@ def main(args, defs):
                 build_util.create_topic(topic, defs)
 
         entry_util.entry(topic, images, link_files, defs)
+
+    elif action == "todo":
+        # todo is a special topic with only a single entry
+        images = []
+        link_files = []
+
+        entry_util.entry("todo", images, link_files, defs)
 
     elif action == "continue":
         # this is basically the same as entry, but we pass in the name

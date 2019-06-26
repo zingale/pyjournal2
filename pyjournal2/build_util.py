@@ -13,12 +13,17 @@ def get_topics(defs):
     """return a list of the currently known topics"""
 
     source_dir = get_source_dir(defs)
+
     topics = []
 
     # get the list of directories in source/ -- these are the topics
     for d in os.listdir(source_dir):
         if os.path.isdir(os.path.join(source_dir, d)) and not d.startswith("_"):
             topics.append(d)
+
+    # remove todo -- it will be treated specially
+    if "todo" in topics:
+        topics.remove("todo")
 
     return topics
 
@@ -71,6 +76,9 @@ def build(defs, show=0):
     # things subdivided by year-month, and that a
     # "topic-year-month.rst" that includes the individual entries
     for topic in topics:
+
+        print("working on {}".format(topic))
+
         years, entries = get_topic_entries(topic, defs)
         tdir = os.path.join(source_dir, topic)
         os.chdir(tdir)
@@ -115,6 +123,8 @@ def build(defs, show=0):
         mf.write(".. toctree::\n")
         mf.write("   :maxdepth: 1\n")
         mf.write("   :caption: Contents:\n\n")
+
+        mf.write("   todo/todo.rst\n")
 
         for topic in sorted(topics):
             mf.write("   {}/{}\n".format(topic, topic))

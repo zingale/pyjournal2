@@ -66,18 +66,25 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
     except:
         editor = "emacs"
 
-    # determine the filename
-    if use_date is not None:
-        entry_dir = use_date
-    else:
-        entry_dir = get_dir_string()
-    ofile = entry_dir + ".rst"
 
-    # determine the directory we place it in -- this is the form yyyy-mm-dd/
-    odir = "{}/journal-{}/source/{}/{}/".format(defs["working_path"],
-                                                defs["nickname"],
-                                                topic,
-                                                entry_dir)
+    if topic == "todo":
+        odir = "{}/journal-{}/source/todo/".format(defs["working_path"],
+                                                   defs["nickname"])
+        ofile = "todo.rst"
+
+    else:
+        # determine the filename
+        if use_date is not None:
+            entry_dir = use_date
+        else:
+            entry_dir = get_dir_string()
+        ofile = entry_dir + ".rst"
+
+        # determine the directory we place it in -- this is the form yyyy-mm-dd/
+        odir = "{}/journal-{}/source/{}/{}/".format(defs["working_path"],
+                                                    defs["nickname"],
+                                                    topic,
+                                                    entry_dir)
 
     if not os.path.isdir(odir):
         try:
@@ -88,7 +95,10 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
 
     entry_file = os.path.join(odir, ofile)
     if not os.path.isfile(entry_file):
-        header = len(entry_dir)*"*" + "\n" + "{}\n".format(entry_dir) + len(entry_dir)*"*" + "\n"
+        if ofile == "todo.rst":
+            header = len("todo")*"*" + "\n" + "todo\n" + len("todo")*"*" + "\n"
+        else:
+            header = len(entry_dir)*"*" + "\n" + "{}\n".format(entry_dir) + len(entry_dir)*"*" + "\n"
         header += SYMBOLS + "\n\n"
     else:
         header = ""
