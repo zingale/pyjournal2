@@ -140,4 +140,10 @@ Note: pyjournal2 requires python 3
     pushes any changes in the local journal to the remote (git bare
     repo) version
 
+  - `pyjournal.py continue topic-name`
+
+    continues editing the previous entry for a topic.  This is only
+    needed if you want to continue an entry from the previous day.
+    Otherwise, `pyjournal.py topic-name` will always continue the
+    current day's entry.
 
