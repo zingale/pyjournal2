@@ -19,7 +19,7 @@ FIGURE_STR = r"""
 """
 
 SYMBOLS = r"""
-.. special characters: αβγδεζηθικλμνξοπρστυφχψω ΓΔΘΛΞΠΣΦΨΩ —
+.. special characters: αβγδεζηθικλμνξοπρστυφχψω ΓΔΘΛΞΠΣΦΨΩ — ←→
 .. you can add an entry to the index via '.. index:: key'"""
 
 WARNING = '\033[93m'
@@ -58,7 +58,7 @@ def get_unique_string():
     now = datetime.datetime.now()
     return str(now.replace(microsecond=0)).replace(" ", "_").replace(":", ".")
 
-def entry(topic, images, link_file, defs, string=None, use_date=None):
+def entry(topic, images, link_files, defs, string=None, use_date=None):
     """create an entry"""
 
     try:
@@ -109,7 +109,7 @@ def entry(topic, images, link_file, defs, string=None, use_date=None):
     unique_id = get_unique_string()
 
     files_copied = []
-    for im in images + [link_file]:
+    for im in images + link_files:
 
         if im is None:
             continue
@@ -142,6 +142,8 @@ def entry(topic, images, link_file, defs, string=None, use_date=None):
 
                 if idx >= 0:
                     im0 = "{}:{}".format(unique_id, im_copy[:idx])
+                else:
+                    sys.exit("unsupported image type -- try creating a link instead")
 
                 # add the figure text
                 for l in FIGURE_STR.split("\n"):

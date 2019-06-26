@@ -121,6 +121,10 @@ Note: pyjournal2 requires python 3
     and if you answer yes, the editor will pop up with a blank entry
     page in the new topic.
 
+  - `pyjournal.py continue topic`
+
+    This will allow you to open yesterday's entry to continue editing it.
+
   - `pyjournal.py build`
 
     builds the journal Sphinx webpage

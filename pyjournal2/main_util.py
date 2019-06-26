@@ -24,6 +24,11 @@ def get_args(defs):
         # we are doing init or connect, so there are no keys yet
         topics = []
 
+    if not os.path.isfile(defs["param_file"]):
+        if len(sys.argv) == 1 or sys.argv[1] not in ["init", "connect"]:
+            print("pyjournal is not initialized")
+            sys.exit()
+
     if len(sys.argv) == 1:  # the command name is first argument
         args = {"command": "entry",
                 "images": [],
@@ -162,7 +167,10 @@ def main(args, defs):
     elif action == "entry":
         images = args["images"]
         topic = args["topic"]
-        link_file = args["link"]
+        if args["link"] is None:
+            link_files = []
+        else:
+            link_files = args["link"].split()
 
         # check if the topic exists.  If not, ask if we want to create it
         topics = build_util.get_topics(defs)
@@ -173,7 +181,7 @@ def main(args, defs):
             if create.lower() == "y":
                 build_util.create_topic(topic, defs)
 
-        entry_util.entry(topic, images, link_file, defs)
+        entry_util.entry(topic, images, link_files, defs)
 
     elif action == "continue":
         # this is basically the same as entry, but we pass in the name
@@ -183,12 +191,15 @@ def main(args, defs):
 
         images = args["images"]
         topic = args["topic"]
-        link_file = args["link"]
+        if args["link"] is None:
+            link_files = []
+        else:
+            link_files = args["link"].split()
 
         # get the entry id of the last entry for this topic
         _, entries = build_util.get_topic_entries(topic, defs)
 
-        entry_util.entry(topic, images, link_file, defs, use_date=entries[-1])
+        entry_util.entry(topic, images, link_files, defs, use_date=entries[-1])
 
     elif action == "build":
         build_util.build(defs)
