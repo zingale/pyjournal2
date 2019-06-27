@@ -77,8 +77,6 @@ def build(defs, show=0):
     # "topic-year-month.rst" that includes the individual entries
     for topic in topics:
 
-        print("working on {}".format(topic))
-
         years, entries = get_topic_entries(topic, defs)
         tdir = os.path.join(source_dir, topic)
         os.chdir(tdir)
