@@ -98,7 +98,8 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
         if ofile == "todo.rst":
             header = len("todo")*"*" + "\n" + "todo\n" + len("todo")*"*" + "\n"
         else:
-            header = len(entry_dir)*"*" + "\n" + "{}\n".format(entry_dir) + len(entry_dir)*"*" + "\n"
+            header = ".. _{}_{}:\n\n".format(topic, entry_dir)
+            header += len(entry_dir)*"*" + "\n" + "{}\n".format(entry_dir) + len(entry_dir)*"*" + "\n"
         header += SYMBOLS + "\n\n"
     else:
         header = ""
