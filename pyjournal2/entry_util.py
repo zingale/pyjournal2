@@ -10,7 +10,7 @@ import pyjournal2.shell_util as shell_util
 FIGURE_STR = r"""
 .. _@figlabel@:
 .. figure:: @figname@
-   :scale: 80%
+   :width: 90%
    :align: center
 
    The caption goes here
