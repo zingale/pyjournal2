@@ -149,6 +149,7 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
                 # create a unique label for latex referencing
                 idx = im_copy.lower().rfind(".jpg")
                 idx = max(idx, im_copy.lower().rfind(".png"))
+                idx = max(idx, im_copy.lower().rfind(".gif"))
                 idx = max(idx, im_copy.lower().rfind(".pdf"))
 
                 if idx >= 0:
