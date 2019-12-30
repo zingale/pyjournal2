@@ -104,7 +104,7 @@ def get_args(defs):
 
         # the pull command
         pull_ps = sp.add_parser("pull",
-                                help="pull from the remote journal" )
+                                help="pull from the remote journal")
 
         # the push command
         push_ps = sp.add_parser("push",
