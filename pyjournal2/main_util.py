@@ -87,6 +87,11 @@ def get_args(defs):
         todo_ps = sp.add_parser("todo",
                                 help="edit the todo list")
 
+
+        # the year command
+        year_ps = sp.add_parser("year",
+                                help="edit the years' goals")
+
         # the continue command
         cont_ps = sp.add_parser("continue",
                                 help="continue working on the last entry (from a different day), with optional images")
@@ -194,6 +199,13 @@ def main(args, defs):
         link_files = []
 
         entry_util.entry("todo", images, link_files, defs)
+
+    elif action == "year":
+        # year is a special topic with only a single entry per year
+        images = []
+        link_files = []
+
+        entry_util.entry("year", images, link_files, defs)
 
     elif action == "continue":
         # this is basically the same as entry, but we pass in the name

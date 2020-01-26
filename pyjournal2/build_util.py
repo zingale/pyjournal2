@@ -15,6 +15,7 @@ def get_topics(defs):
     source_dir = get_source_dir(defs)
 
     topics = []
+    other = []
 
     # get the list of directories in source/ -- these are the topics
     for d in os.listdir(source_dir):
@@ -24,8 +25,13 @@ def get_topics(defs):
     # remove todo -- it will be treated specially
     if "todo" in topics:
         topics.remove("todo")
+        other.append("todo")
 
-    return topics
+    if "year-review" in topics:
+        topics.remove("year-review")
+        other.append("year-review")
+
+    return topics, other
 
 def get_topic_entries(topic, defs):
 
@@ -53,6 +59,29 @@ def get_topic_entries(topic, defs):
 
     return years, entries
 
+
+def get_year_review_entries(defs):
+
+    cwd = os.getcwd()
+
+    source_dir = get_source_dir(defs)
+    tdir = os.path.join(source_dir, "year-review")
+
+    os.chdir(tdir)
+
+    # look over the directories here, they will be in the form YYYY-MM-DD
+    entries = []
+    for f in os.listdir(tdir):
+        if f.endswith(".rst"):
+            entries.append(f)
+
+    entries.sort()
+
+    os.chdir(cwd)
+
+    return entries
+
+
 def create_topic(topic, defs):
     """create a new topic directory"""
 
@@ -70,7 +99,7 @@ def build(defs, show=0):
 
     source_dir = get_source_dir(defs)
 
-    topics = get_topics(defs)
+    topics, other = get_topics(defs)
 
     # for each topic, we want to create a "topic.rst" that then has
     # things subdivided by year-month, and that a
@@ -99,6 +128,7 @@ def build(defs, show=0):
                 for entry in y_entries:
                     yf.write("   {}/{}.rst\n".format(entry, entry))
 
+
         # now write the topic.rst
         with open("{}.rst".format(topic), "w") as tf:
             tf.write(len(topic)*"*" + "\n")
@@ -112,6 +142,25 @@ def build(defs, show=0):
             for y in years:
                 tf.write("   {}.rst\n".format(y))
 
+    # handle the year review now
+    if "year-review" in other:
+        tdir = os.path.join(source_dir, "year-review")
+        os.chdir(tdir)
+        entries = get_year_review_entries(defs)
+
+        with open("years.rst", "w") as tf:
+            topic = "Year Review"
+            tf.write(len(topic)*"*" + "\n")
+            tf.write("{}\n".format(topic))
+            tf.write(len(topic)*"*" + "\n")
+
+            tf.write(".. toctree::\n")
+            tf.write("   :maxdepth: 2\n")
+            tf.write("   :caption: Contents:\n\n")
+
+            for e in entries:
+                tf.write("   {}.rst\n".format(e))
+
 
     # now write the index.rst
     os.chdir(source_dir)
@@ -122,7 +171,11 @@ def build(defs, show=0):
         mf.write("   :maxdepth: 1\n")
         mf.write("   :caption: Contents:\n\n")
 
-        mf.write("   todo/todo.rst\n")
+        if "todo" in other:
+            mf.write("   todo/todo.rst\n")
+
+        if "year-review" in other:
+            mf.write("   year-review/years.rst\n")
 
         for topic in sorted(topics):
             mf.write("   {}/{}\n".format(topic, topic))

@@ -61,6 +61,8 @@ def get_unique_string():
 def entry(topic, images, link_files, defs, string=None, use_date=None):
     """create an entry"""
 
+    current_year = int(datetime.datetime.now().year)
+
     try:
         editor = os.environ["EDITOR"]
     except:
@@ -71,6 +73,12 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
         odir = "{}/journal-{}/source/todo/".format(defs["working_path"],
                                                    defs["nickname"])
         ofile = "todo.rst"
+
+    elif topic == "year":
+        odir = "{}/journal-{}/source/year_review/".format(defs["working_path"],
+                                                          defs["nickname"])
+
+        ofile = "year-{}.rst".format(current_year)
 
     else:
         # determine the filename
@@ -97,6 +105,9 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
     if not os.path.isfile(entry_file):
         if ofile == "todo.rst":
             header = len("todo")*"*" + "\n" + "todo\n" + len("todo")*"*" + "\n"
+        elif ofile.startswith("year-"):
+            title = "{}".format(current_year)
+            header = len(title)*"*" + "\n" + "{}\n".format(title) + len(title)*"*" + "\n\n"
         else:
             header = ".. _{}_{}:\n\n".format(topic, entry_dir)
             header += len(entry_dir)*"*" + "\n" + "{}\n".format(entry_dir) + len(entry_dir)*"*" + "\n"
