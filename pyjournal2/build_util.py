@@ -27,9 +27,9 @@ def get_topics(defs):
         topics.remove("todo")
         other.append("todo")
 
-    if "year-review" in topics:
-        topics.remove("year-review")
-        other.append("year-review")
+    if "year_review" in topics:
+        topics.remove("year_review")
+        other.append("year_review")
 
     return topics, other
 
@@ -65,14 +65,14 @@ def get_year_review_entries(defs):
     cwd = os.getcwd()
 
     source_dir = get_source_dir(defs)
-    tdir = os.path.join(source_dir, "year-review")
+    tdir = os.path.join(source_dir, "year_review")
 
     os.chdir(tdir)
 
     # look over the directories here, they will be in the form YYYY-MM-DD
     entries = []
     for f in os.listdir(tdir):
-        if f.endswith(".rst"):
+        if f.endswith(".rst") and f != "years.rst":
             entries.append(f)
 
     entries.sort()
@@ -143,13 +143,13 @@ def build(defs, show=0):
                 tf.write("   {}.rst\n".format(y))
 
     # handle the year review now
-    if "year-review" in other:
-        tdir = os.path.join(source_dir, "year-review")
+    if "year_review" in other:
+        tdir = os.path.join(source_dir, "year_review")
         os.chdir(tdir)
         entries = get_year_review_entries(defs)
 
         with open("years.rst", "w") as tf:
-            topic = "Year Review"
+            topic = "year review"
             tf.write(len(topic)*"*" + "\n")
             tf.write("{}\n".format(topic))
             tf.write(len(topic)*"*" + "\n")
@@ -159,7 +159,7 @@ def build(defs, show=0):
             tf.write("   :caption: Contents:\n\n")
 
             for e in entries:
-                tf.write("   {}.rst\n".format(e))
+                tf.write("   {}\n".format(e))
 
 
     # now write the index.rst
@@ -174,8 +174,8 @@ def build(defs, show=0):
         if "todo" in other:
             mf.write("   todo/todo.rst\n")
 
-        if "year-review" in other:
-            mf.write("   year-review/years.rst\n")
+        if "year_review" in other:
+            mf.write("   year_review/years.rst\n")
 
         for topic in sorted(topics):
             mf.write("   {}/{}\n".format(topic, topic))
