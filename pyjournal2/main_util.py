@@ -19,7 +19,7 @@ def get_args(defs):
     # argparse
 
     try:
-        topics = build_util.get_topics(defs)
+        topics, _ = build_util.get_topics(defs)
     except KeyError:
         # we are doing init or connect, so there are no keys yet
         topics = []
@@ -183,7 +183,7 @@ def main(args, defs):
             link_files = args["link"].split()
 
         # check if the topic exists.  If not, ask if we want to create it
-        topics = build_util.get_topics(defs)
+        topics, _ = build_util.get_topics(defs)
         if topic not in topics:
             create = input("topic {} does not exist, create? [y]  ".format(topic))
             if create == "":
