@@ -52,8 +52,8 @@ def get_topic_entries(topic, defs):
                 years.append(y)
             entries.append(d)
 
-    years.sort()
-    entries.sort()
+    years.sort(reverse=True)
+    entries.sort(reverse=True)
 
     os.chdir(cwd)
 
@@ -61,6 +61,8 @@ def get_topic_entries(topic, defs):
 
 
 def get_year_review_entries(defs):
+    """a year review is a special topic for a single year, this gets all of those
+    year entries"""
 
     cwd = os.getcwd()
 
@@ -75,7 +77,7 @@ def get_year_review_entries(defs):
         if f.endswith(".rst") and f != "years.rst":
             entries.append(f)
 
-    entries.sort()
+    entries.sort(reverse=True)
 
     os.chdir(cwd)
 
