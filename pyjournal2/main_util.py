@@ -220,10 +220,11 @@ def main(args, defs):
         else:
             link_files = args["link"].split()
 
-        # get the entry id of the last entry for this topic
+        # get the entry id of the last entry for this topic -- note: we sort
+        # with latest entries first
         _, entries = build_util.get_topic_entries(topic, defs)
 
-        entry_util.entry(topic, images, link_files, defs, use_date=entries[-1])
+        entry_util.entry(topic, images, link_files, defs, use_date=entries[0])
 
     elif action == "build":
         build_util.build(defs)
