@@ -26,6 +26,14 @@ Note: pyjournal2 requires python 3
   (omit the `--user` for a systemwide installation).  This will put the
   `pyjournal.py` executable script in you system's path.
 
+  You should set your `EDITOR` environment variable.  This has been tested
+  with emacs and vi.  For emacs, should should launch it in a terminal, e.g.,
+  by setting
+
+  ```
+  export EDITOR="emacs -nw"
+  ```
+
 * Command help:
 
   pyjournal2 uses a number of subcommands to create, edit, and build a
