@@ -4,7 +4,7 @@ pyjournal2 is a commandline script written in python to create and
 manage a Sphinx ReST-based scientific journal.  The journal is
 distributed (via `git`) so that we can access it from any machine we
 work on.  It is commandline driven to make the barrier-to-entry for
-creating a short entry minimal.  Entries are groups into topics and
+creating a short entry minimal.  Entries are grouped into topics and
 shown in date-order.
 
 The basic idea is that you have one research journal with a number of
@@ -128,10 +128,6 @@ Note: pyjournal2 requires python 3
     you will then be prompted if you really want to create the new topic,
     and if you answer yes, the editor will pop up with a blank entry
     page in the new topic.
-
-  - `pyjournal.py continue topic`
-
-    This will allow you to open yesterday's entry to continue editing it.
 
   - `pyjournal.py build`
 
