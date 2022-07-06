@@ -6,9 +6,11 @@ import webbrowser
 
 from pyjournal2 import shell_util
 
+
 def get_source_dir(defs):
     """return the directory where we put the sources"""
     return f"{defs['working_path']}/journal-{defs['nickname']}/source/"
+
 
 def get_topics(defs):
     """return a list of the currently known topics"""
@@ -33,6 +35,7 @@ def get_topics(defs):
         other.append("year_review")
 
     return topics, other
+
 
 def get_topic_entries(topic, defs):
 
@@ -91,8 +94,9 @@ def create_topic(topic, defs):
     source_dir = get_source_dir(defs)
     try:
         os.mkdir(os.path.join(source_dir, topic))
-    except:
+    except OSError:
         sys.exit("unable to create a new topic")
+
 
 def build(defs, show=0):
     """build the journal.  This entails writing the TOC files that link to
@@ -131,7 +135,6 @@ def build(defs, show=0):
                 for entry in y_entries:
                     yf.write(f"   {entry}/{entry}.rst\n")
 
-
         # now write the topic.rst
         with open(f"{topic}.rst", "w") as tf:
             tf.write(len(topic)*"*" + "\n")
@@ -164,7 +167,6 @@ def build(defs, show=0):
             for e in entries:
                 tf.write(f"   {e}\n")
 
-
     # now write the index.rst
     os.chdir(source_dir)
     with open("index.rst", "w") as mf:
@@ -189,7 +191,6 @@ def build(defs, show=0):
         mf.write("* :ref:`genindex`\n")
         mf.write("* :ref:`modindex`\n")
         mf.write("* :ref:`search`\n")
-
 
     # now do the building
     build_dir = "{}/journal-{}/".format(defs["working_path"], defs["nickname"])
