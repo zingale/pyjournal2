@@ -5,8 +5,8 @@ import re
 import sys
 import shutil
 
-import pyjournal2.entry_util as entry_util
-import pyjournal2.shell_util as shell_util
+from pyjournal2 import entry_util
+from pyjournal2 import shell_util
 
 #=============================================================================
 # journal-specific routines
@@ -26,15 +26,15 @@ def init(nickname, username, master_path, working_path, defs):
     if not os.path.isdir(master_path):
         try:
             os.mkdir(master_path)
-        except:
+        except (FileExistsError, FileNotFoundError):
             sys.exit("ERROR: you need to specify an existing path in which to create the journal repo")
 
     # create the bare git repo
-    git_master = "{}/journal-{}.git".format(master_path, nickname)
+    git_master = f"{master_path}/journal-{nickname}.git"
     try:
         os.mkdir(git_master)
-    except:
-        sys.exit("ERROR: unable to create a directory in {}".format(master_path))
+    except (FileExistsError, FileNotFoundError):
+        sys.exit(f"ERROR: unable to create a directory in {master_path}")
 
     os.chdir(git_master)
     shell_util.run("git init --bare")
@@ -42,38 +42,38 @@ def init(nickname, username, master_path, working_path, defs):
     # create the local working copy
     try:
         os.chdir(working_path)
-    except:
-        sys.exit("ERROR: unable to change to {}".format(working_path))
+    except OSError:
+        sys.exit(f"ERROR: unable to change to {working_path}")
 
     shell_util.run("git clone " + git_master)
 
     # create the initial directory structure
-    working_journal = "{}/journal-{}".format(working_path, nickname)
+    working_journal = f"{working_path}/journal-{nickname}"
 
     try:
         source_dir = os.path.abspath(os.path.join(defs["module_dir"], "sphinx_base/source"))
         shutil.copytree(source_dir, os.path.join(working_journal, "source"))
         shutil.copy(os.path.join(defs["module_dir"], "sphinx_base/Makefile"),
                 working_journal)
-    except:
+    except OSError:
         sys.exit("ERROR: unable to create initial directory structure")
 
     # create the journal_info.py
     with open(os.path.join(working_journal, "journal_info.py"), "w") as f:
-        f.write("username = \"{}\"\n".format(username))
+        f.write(f"username = \"{username}\"\n")
     #except:
     #    sys.exit("ERROR unable to write in initial directory structure")
 
     # create the .pyjournal2rc file
     try:
         with open(defs["param_file"], "w") as f:
-            f.write("[{}]\n".format("main"))
-            f.write("master_repo = {}\n".format(git_master))
-            f.write("working_path = {}\n".format(working_path))
-            f.write("nickname = {}\n".format(nickname))
-            f.write("username = {}\n".format(username))
-    except:
-        sys.exit("ERROR: unable to open {} for appending".format(defs["param_file"]))
+            f.write("[main]\n")
+            f.write(f"master_repo = {git_master}\n")
+            f.write(f"working_path = {working_path}\n")
+            f.write(f"nickname = {nickname}\n")
+            f.write(f"username = {username}\n")
+    except IOError:
+        sys.exit(f"ERROR: unable to open {defs['param_file']} for appending")
 
     defs["master_repo"] = git_master
     defs["working_path"] = working_path
@@ -112,7 +112,7 @@ def connect(master_repo, working_path, defs):
     try:
         os.chdir(working_path)
     except:
-        sys.exit("ERROR: unable to switch to directory {}".format(working_path))
+        sys.exit(f"ERROR: unable to switch to directory {working_path}")
 
     _, stderr, rc = shell_util.run("git clone " + master_repo)
     if rc != 0:
@@ -122,12 +122,12 @@ def connect(master_repo, working_path, defs):
     # create (or add to) the .pyjournalrc file
     try:
         with open(defs["param_file"], "w") as f:
-            f.write("[{}]\n".format("main"))
-            f.write("master_repo = {}\n".format(master_repo))
-            f.write("working_path = {}\n".format(working_path))
-            f.write("nickname = {}\n".format(nickname))
-    except:
-        sys.exit("ERROR: unable to open {} for appending".format(defs["param_file"]))
+            f.write("[main]\n")
+            f.write(f"master_repo = {master_repo}\n")
+            f.write(f"working_path = {working_path}\n")
+            f.write(f"nickname = {nickname}\n")
+    except IOError:
+        sys.exit(f"ERROR: unable to open {defs['param_file']} for appending")
 
 
 #=============================================================================
@@ -137,12 +137,12 @@ def connect(master_repo, working_path, defs):
 def pull(defs, nickname=None):
     """pull the journal from the origin"""
 
-    wd = "{}/journal-{}".format(defs["working_path"], defs["nickname"])
+    wd = f"{defs['working_path']}/journal-{defs['nickname']}"
 
     try:
         os.chdir(wd)
     except:
-        sys.exit("ERROR: unable to switch to working directory: {}".format(wd))
+        sys.exit(f"ERROR: unable to switch to working directory: {wd}")
 
     stdout, stderr, rc = shell_util.run("git pull")
     if rc != 0:
@@ -156,12 +156,12 @@ def push(defs, nickname=None):
     """push the journal to the origin"""
 
     # switch to the working directory and push to the master
-    wd = "{}/journal-{}".format(defs["working_path"], defs["nickname"])
+    wd = f"{defs['working_path']}/journal-{defs['nickname']}"
 
     try:
         os.chdir(wd)
     except:
-        sys.exit("ERROR: unable to switch to working directory: {}".format(wd))
+        sys.exit(f"ERROR: unable to switch to working directory: {wd}")
 
     _, stderr, rc = shell_util.run("git push")
     if rc != 0:

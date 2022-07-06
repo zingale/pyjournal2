@@ -5,7 +5,7 @@ import os
 import shutil
 import sys
 
-import pyjournal2.shell_util as shell_util
+from pyjournal2 import shell_util
 
 FIGURE_STR = r"""
 .. _@figlabel@:
@@ -70,15 +70,12 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
 
 
     if topic == "todo":
-        odir = "{}/journal-{}/source/todo/".format(defs["working_path"],
-                                                   defs["nickname"])
+        odir = f"{defs['working_path']}/journal-{defs['nickname']}/source/todo/"
         ofile = "todo.rst"
 
     elif topic == "year":
-        odir = "{}/journal-{}/source/year_review/".format(defs["working_path"],
-                                                          defs["nickname"])
-
-        ofile = "year-{}.rst".format(current_year)
+        odir = f"{defs['working_path']}/journal-{defs['nickname']}/source/year_review/"
+        ofile = f"year-{current_year}.rst"
 
     else:
         # determine the filename
@@ -89,16 +86,13 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
         ofile = entry_dir + ".rst"
 
         # determine the directory we place it in -- this is the form yyyy-mm-dd/
-        odir = "{}/journal-{}/source/{}/{}/".format(defs["working_path"],
-                                                    defs["nickname"],
-                                                    topic,
-                                                    entry_dir)
+        odir = f"{defs['working_path']}/journal-{defs['nickname']}/source/{topic}/{entry_dir}/"
 
     if not os.path.isdir(odir):
         try:
             os.mkdir(odir)
         except:
-            sys.exit("ERROR: unable to make directory {}".format(odir))
+            sys.exit(f"ERROR: unable to make directory {odir}")
 
 
     entry_file = os.path.join(odir, ofile)
@@ -106,11 +100,11 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
         if ofile == "todo.rst":
             header = len("todo")*"*" + "\n" + "todo\n" + len("todo")*"*" + "\n"
         elif ofile.startswith("year-"):
-            title = "{}".format(current_year)
-            header = len(title)*"*" + "\n" + "{}\n".format(title) + len(title)*"*" + "\n\n"
+            title = f"{current_year}"
+            header = len(title)*"*" + "\n" + f"{title}\n" + len(title)*"*" + "\n\n"
         else:
-            header = ".. _{}_{}:\n\n".format(topic, entry_dir)
-            header += len(entry_dir)*"*" + "\n" + "{}\n".format(entry_dir) + len(entry_dir)*"*" + "\n"
+            header = f".. _{topic}_{entry_dir}:\n\n"
+            header += len(entry_dir)*"*" + "\n" + f"{entry_dir}\n" + len(entry_dir)*"*" + "\n"
         header += SYMBOLS + "\n\n"
     else:
         header = ""
@@ -120,7 +114,7 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
     try:
         f = open(entry_file, "a+")
     except:
-        sys.exit("ERROR: unable to open {}".format(os.path.join(odir, ofile)))
+        sys.exit(f"ERROR: unable to open {os.path.join(odir, ofile)}")
 
     f.write(header)
     if string is not None:
@@ -142,8 +136,8 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
         dest = odir
 
         im_copy = os.path.basename(im)
-        if os.path.isfile("{}/{}".format(dest, im_copy)):
-            im_copy = "{}_{}".format(unique_id.replace(".", "_"), im_copy)
+        if os.path.isfile(f"{dest}/{im_copy}"):
+            im_copy = f"{unique_id.replace('.', '_')}_{im_copy}"
 
         dest = os.path.join(dest, im_copy)
 
@@ -152,7 +146,7 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
             try:
                 shutil.copy(src, dest)
             except:
-                sys.exit("ERROR: unable to copy image {} to {}".format(src, dest))
+                sys.exit(f"ERROR: unable to copy image {src} to {dest}")
 
             files_copied.append(im_copy)
 
@@ -164,37 +158,37 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
                 idx = max(idx, im_copy.lower().rfind(".pdf"))
 
                 if idx >= 0:
-                    im0 = "{}:{}".format(unique_id, im_copy[:idx])
+                    im0 = f"{unique_id}:{im_copy[:idx]}"
                 else:
                     sys.exit("unsupported image type -- try creating a link instead")
 
                 # add the figure text
                 for l in FIGURE_STR.split("\n"):
-                    f.write("{}\n".format(
-                        l.replace("@figname@", im_copy).replace("@figlabel@", im0).rstrip()))
+                    new_name = l.replace("@figname@", im_copy).replace("@figlabel@", im0).rstrip()
+                    f.write(f"{new_name}\n")
 
             else:
                 # add the download directive
-                f.write(":download:`{} <{}>`\n\n".format(im_copy, im_copy))
+                f.write(f":download:`{im_copy} <{im_copy}>`\n\n")
 
     f.close()
 
     # launch the editor specified in the EDITOR environment variable
     if string is None:
         if editor == "emacs":
-            prog = "emacs -nw {}/{}".format(odir, ofile)
+            prog = f"emacs -nw {odir}/{ofile}"
         else:
-            prog = "{} {}/{}".format(editor, odir, ofile)
+            prog = f"{editor} {odir}/{ofile}"
 
-        stdout, stderr, rc = shell_util.run(prog)
+        shell_util.run(prog)
 
     # commit the entry to the working git repo
     os.chdir(odir)
 
-    stdout, stderr, rc = shell_util.run("git add " + ofile)
-    stdout, stderr, rc = shell_util.run("git commit -m 'new entry' " + ofile)
+    shell_util.run("git add " + ofile)
+    shell_util.run("git commit -m 'new entry' " + ofile)
 
     # commit any images too
     for im in files_copied:
-        stdout, stderr, rc = shell_util.run("git add " + im)
-        stdout, stderr, rc = shell_util.run("git commit -m 'new image' " + im)
+        shell_util.run("git add " + im)
+        shell_util.run("git commit -m 'new image' " + im)

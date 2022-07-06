@@ -4,7 +4,7 @@
 a simple commandline-driven scientific journal in LaTeX managed by git
 """
 
-import pyjournal2.main_util as main_util
+from pyjournal2 import main_util
 
 if __name__ == "__main__":
     tdefs = main_util.read_config()

@@ -1,13 +1,14 @@
 """This module controls building the journal from the entry sources"""
 
 import os
+import sys
 import webbrowser
 
-import pyjournal2.shell_util as shell_util
+from pyjournal2 import shell_util
 
 def get_source_dir(defs):
     """return the directory where we put the sources"""
-    return "{}/journal-{}/source/".format(defs["working_path"], defs["nickname"])
+    return f"{defs['working_path']}/journal-{defs['nickname']}/source/"
 
 def get_topics(defs):
     """return a list of the currently known topics"""
@@ -91,7 +92,7 @@ def create_topic(topic, defs):
     try:
         os.mkdir(os.path.join(source_dir, topic))
     except:
-        sys.error("unable to create a new topic")
+        sys.exit("unable to create a new topic")
 
 def build(defs, show=0):
     """build the journal.  This entails writing the TOC files that link to
@@ -118,9 +119,9 @@ def build(defs, show=0):
         for y in years:
             y_entries = [q for q in entries if q.startswith(y)]
 
-            with open("{}.rst".format(y), "w") as yf:
+            with open(f"{y}.rst", "w") as yf:
                 yf.write("****\n")
-                yf.write("{}\n".format(y))
+                yf.write(f"{y}\n")
                 yf.write("****\n\n")
 
                 yf.write(".. toctree::\n")
@@ -128,13 +129,13 @@ def build(defs, show=0):
                 yf.write("   :caption: Contents:\n\n")
 
                 for entry in y_entries:
-                    yf.write("   {}/{}.rst\n".format(entry, entry))
+                    yf.write(f"   {entry}/{entry}.rst\n")
 
 
         # now write the topic.rst
-        with open("{}.rst".format(topic), "w") as tf:
+        with open(f"{topic}.rst", "w") as tf:
             tf.write(len(topic)*"*" + "\n")
-            tf.write("{}\n".format(topic))
+            tf.write(f"{topic}\n")
             tf.write(len(topic)*"*" + "\n")
 
             tf.write(".. toctree::\n")
@@ -142,7 +143,7 @@ def build(defs, show=0):
             tf.write("   :caption: Contents:\n\n")
 
             for y in years:
-                tf.write("   {}.rst\n".format(y))
+                tf.write(f"   {y}.rst\n")
 
     # handle the year review now
     if "year_review" in other:
@@ -153,7 +154,7 @@ def build(defs, show=0):
         with open("years.rst", "w") as tf:
             topic = "year review"
             tf.write(len(topic)*"*" + "\n")
-            tf.write("{}\n".format(topic))
+            tf.write(f"{topic}\n")
             tf.write(len(topic)*"*" + "\n")
 
             tf.write(".. toctree::\n")
@@ -161,7 +162,7 @@ def build(defs, show=0):
             tf.write("   :caption: Contents:\n\n")
 
             for e in entries:
-                tf.write("   {}\n".format(e))
+                tf.write(f"   {e}\n")
 
 
     # now write the index.rst
@@ -180,7 +181,7 @@ def build(defs, show=0):
             mf.write("   year_review/years.rst\n")
 
         for topic in sorted(topics):
-            mf.write("   {}/{}\n".format(topic, topic))
+            mf.write(f"   {topic}/{topic}\n")
 
         mf.write("\n")
         mf.write("Indices and tables\n")

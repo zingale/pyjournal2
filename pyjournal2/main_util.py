@@ -7,9 +7,9 @@ import configparser
 import os
 import sys
 
-import pyjournal2.build_util as build_util
-import pyjournal2.entry_util as entry_util
-import pyjournal2.git_util as git_util
+from pyjournal2 import build_util
+from pyjournal2 import entry_util
+from pyjournal2 import git_util
 
 def get_args(defs):
     """ parse the commandline arguments """
@@ -84,13 +84,13 @@ def get_args(defs):
 
 
         # the todo command
-        todo_ps = sp.add_parser("todo",
-                                help="edit the todo list")
+        sp.add_parser("todo",
+                      help="edit the todo list")
 
 
         # the year command
-        year_ps = sp.add_parser("year",
-                                help="edit the years' goals")
+        sp.add_parser("year",
+                      help="edit the years' goals")
 
         # the continue command
         cont_ps = sp.add_parser("continue",
@@ -104,24 +104,24 @@ def get_args(defs):
                              nargs="*", default=None, type=str)
 
         # the build command
-        build_ps = sp.add_parser("build",
-                                 help="build a PDF of the journal")
+        sp.add_parser("build",
+                      help="build a PDF of the journal")
 
         # the pull command
-        pull_ps = sp.add_parser("pull",
-                                help="pull from the remote journal")
+        sp.add_parser("pull",
+                      help="pull from the remote journal")
 
         # the push command
-        push_ps = sp.add_parser("push",
-                                help="push local changes to the remote journal")
+        sp.add_parser("push",
+                      help="push local changes to the remote journal")
 
         # the status command
-        stat_ps = sp.add_parser("status",
-                                help="list the current journal information")
+        sp.add_parser("status",
+                      help="list the current journal information")
 
         # the show command
-        show_ps = sp.add_parser("show",
-                                help="build the PDF and launch a PDF viewer")
+        sp.add_parser("show",
+                      help="build the PDF and launch a PDF viewer")
 
         args = vars(p.parse_args())
 
@@ -185,7 +185,7 @@ def main(args, defs):
         # check if the topic exists.  If not, ask if we want to create it
         topics, _ = build_util.get_topics(defs)
         if topic not in topics:
-            create = input("topic {} does not exist, create? [y]  ".format(topic))
+            create = input(f"topic {topic} does not exist, create? [y]  ")
             if create == "":
                 create = "y"
             if create.lower() == "y":
@@ -247,8 +247,8 @@ def main(args, defs):
         except KeyError:
             sys.exit("Error: no journal found")
 
-        print("  working directory: {}/journal-{}".format(wp, nickname))
-        print("  master git repo: {}".format(defs["master_repo"]))
+        print(f"  working directory: {wp}/journal-{nickname}")
+        print(f"  master git repo: {defs['master_repo']}")
         print(" ")
 
     else:
