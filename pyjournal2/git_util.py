@@ -12,6 +12,7 @@ from pyjournal2 import shell_util
 # journal-specific routines
 #=============================================================================
 
+
 def init(nickname, username, master_path, working_path, defs):
     """initialize the journal by setting up the git repo and copying the
     basic sphinx directory tree"""
@@ -61,8 +62,6 @@ def init(nickname, username, master_path, working_path, defs):
     # create the journal_info.py
     with open(os.path.join(working_journal, "journal_info.py"), "w") as f:
         f.write(f"username = \"{username}\"\n")
-    #except:
-    #    sys.exit("ERROR unable to write in initial directory structure")
 
     # create the .pyjournal2rc file
     try:
@@ -92,6 +91,7 @@ def init(nickname, username, master_path, working_path, defs):
     shell_util.run("git commit -m 'initial journal.tex file' .")
     shell_util.run("git push origin master")
 
+
 def connect(master_repo, working_path, defs):
     """connect to an existing journal on git on another machine"""
 
@@ -111,7 +111,7 @@ def connect(master_repo, working_path, defs):
     # git clone the bare repo at master_repo into the working path
     try:
         os.chdir(working_path)
-    except:
+    except OSError:
         sys.exit(f"ERROR: unable to switch to directory {working_path}")
 
     _, stderr, rc = shell_util.run("git clone " + master_repo)
@@ -134,6 +134,7 @@ def connect(master_repo, working_path, defs):
 # general routines
 #=============================================================================
 
+
 def pull(defs, nickname=None):
     """pull the journal from the origin"""
 
@@ -141,7 +142,7 @@ def pull(defs, nickname=None):
 
     try:
         os.chdir(wd)
-    except:
+    except OSError:
         sys.exit(f"ERROR: unable to switch to working directory: {wd}")
 
     stdout, stderr, rc = shell_util.run("git pull")
@@ -160,7 +161,7 @@ def push(defs, nickname=None):
 
     try:
         os.chdir(wd)
-    except:
+    except OSError:
         sys.exit(f"ERROR: unable to switch to working directory: {wd}")
 
     _, stderr, rc = shell_util.run("git push")

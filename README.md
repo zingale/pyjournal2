@@ -15,7 +15,7 @@ file per day.  Images and links to files can easily be added (and the
 files are copied to the git repo so they are permanently part of the
 journal).
 
-Note: pyjournal2 requires python 3
+Note: pyjournal2 requires python 3.7 or later
 
 * Installing:
 

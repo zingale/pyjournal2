@@ -11,6 +11,7 @@ from pyjournal2 import build_util
 from pyjournal2 import entry_util
 from pyjournal2 import git_util
 
+
 def get_args(defs):
     """ parse the commandline arguments """
 
@@ -82,11 +83,9 @@ def get_args(defs):
         entry_ps.add_argument("images", help="images to include as figures in the entry",
                               nargs="*", default=None, type=str)
 
-
         # the todo command
         sp.add_parser("todo",
                       help="edit the todo list")
-
 
         # the year command
         sp.add_parser("year",
@@ -127,6 +126,7 @@ def get_args(defs):
 
     return args
 
+
 def read_config():
     """ parse the .pyjournal2rc file -- store the results in a dictionary
         e.g., defs["working_path"] """
@@ -144,10 +144,11 @@ def read_config():
         defs["nickname"] = cp.get("main", "nickname")
         try:
             defs["username"] = cp.get("main", "username")
-        except:
+        except KeyError:
             pass
 
     return defs
+
 
 def main(args, defs):
     """ main interface """

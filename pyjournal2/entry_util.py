@@ -28,6 +28,7 @@ FAIL = '\033[91m'
 BOLD = '\033[1m'
 ENDC = '\033[0m'
 
+
 def warning(ostr):
     """
     Output a string to the terminal colored orange to indicate a
@@ -53,10 +54,12 @@ def get_dir_string():
     now = datetime.date.today()
     return str(now)
 
+
 def get_unique_string():
     """get a full date time string"""
     now = datetime.datetime.now()
     return str(now.replace(microsecond=0)).replace(" ", "_").replace(":", ".")
+
 
 def entry(topic, images, link_files, defs, string=None, use_date=None):
     """create an entry"""
@@ -65,9 +68,8 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
 
     try:
         editor = os.environ["EDITOR"]
-    except:
+    except KeyError:
         editor = "emacs"
-
 
     if topic == "todo":
         odir = f"{defs['working_path']}/journal-{defs['nickname']}/source/todo/"
@@ -91,9 +93,8 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
     if not os.path.isdir(odir):
         try:
             os.mkdir(odir)
-        except:
+        except OSError:
             sys.exit(f"ERROR: unable to make directory {odir}")
-
 
     entry_file = os.path.join(odir, ofile)
     if not os.path.isfile(entry_file):
@@ -113,7 +114,7 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
     # If we passed in a string, then write it too.
     try:
         f = open(entry_file, "a+")
-    except:
+    except IOError:
         sys.exit(f"ERROR: unable to open {os.path.join(odir, ofile)}")
 
     f.write(header)
@@ -145,7 +146,7 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
         if im != "":
             try:
                 shutil.copy(src, dest)
-            except:
+            except OSError:
                 sys.exit(f"ERROR: unable to copy image {src} to {dest}")
 
             files_copied.append(im_copy)
