@@ -82,7 +82,7 @@ def init(nickname, username, master_path, working_path, defs):
 
     # create an initial entry saying "journal created"
     images = []
-    link_file = ""
+    link_file = []
     entry_util.entry("main", images, link_file, defs, string="journal created\n")
 
     # do a git add / push
