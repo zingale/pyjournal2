@@ -144,7 +144,7 @@ def read_config():
         defs["nickname"] = cp.get("main", "nickname")
         try:
             defs["username"] = cp.get("main", "username")
-        except KeyError:
+        except (configparser.NoOptionError, KeyError):
             pass
 
     return defs
