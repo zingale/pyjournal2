@@ -8,6 +8,7 @@
 
 # -- Path setup --------------------------------------------------------------
 
+import datetime
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -16,9 +17,9 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 import re
-import sphinx_rtd_theme
+
 import journal_info
-import datetime
+import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 
@@ -45,7 +46,11 @@ release = ''
 # ones.
 extensions = [
     'sphinx.ext.mathjax',
+    'sphinx-prompt',
+    'sphinx_copybutton',
     'sphinx.ext.githubpages',
+    'nbsphinx',
+    'IPython.sphinxext.ipython_console_highlighting'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -65,7 +70,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -96,13 +101,7 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-html_context = {
-    'css_files': [
-        '_static/theme_overrides.css',  # override wide tables in RTD theme
-        '_static/css/theme.css',
-        '_static/pygments.css'
-    ],
-}
+html_css_files = ["theme_overrides.css"]
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
