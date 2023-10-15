@@ -146,7 +146,6 @@ def build(defs, show=0):
         # year
         for y in years:
             y_entries = [q for q in entries if q.year == y]
-            print(topic, y, len(y_entries))
 
             with open(f"{y}.rst", "w") as yf:
                 yf.write("****\n")
