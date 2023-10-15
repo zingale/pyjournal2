@@ -7,6 +7,15 @@ import webbrowser
 from pyjournal2 import shell_util
 
 
+class Entry:
+    def __init__(self, topic, year, entry_date_num):
+        self.topic = topic
+        self.year = int(year)
+        self.entry_date_num = entry_date_num
+
+    def __str__(self):
+        return f"{self.topic}: {self.entry_date_num}"
+
 def get_source_dir(defs):
     """return the directory where we put the sources"""
     return f"{defs['working_path']}/journal-{defs['nickname']}/source/"
@@ -38,6 +47,7 @@ def get_topics(defs):
 
 
 def get_topic_entries(topic, defs):
+    """return a list of Entry objects for all the entries in topic"""
 
     cwd = os.getcwd()
 
@@ -47,26 +57,34 @@ def get_topic_entries(topic, defs):
     os.chdir(tdir)
 
     # look over the directories here, they will be in the form YYYY-MM-DD
-    years = []
     entries = []
+
     for d in os.listdir(tdir):
         if os.path.isdir(os.path.join(tdir, d)):
             y, _, _ = d.split("-")
-            if y not in years:
-                years.append(y)
-            entries.append(d)
+            entries.append(Entry(topic, y, d))
 
-    years.sort(reverse=True)
-    entries.sort(reverse=True)
+    entries.sort(reverse=True, key=lambda e : e.entry_date_num)
 
     os.chdir(cwd)
 
-    return years, entries
+    return entries
 
+def get_most_recent_entries(topics, defs, *, N=25):
+    """return the N most recent entries, regardless of topic"""
+
+    entries = []
+    for t in topics:
+        entries += get_topic_entries(t, defs)
+
+    entries.sort(reverse=True, key=lambda e: e.entry_date_num)
+    return entries[0:N]
 
 def get_year_review_entries(defs):
-    """a year review is a special topic for a single year, this gets all of those
-    year entries"""
+    """a year review is a special topic for a single year, this gets
+    all of those year entries
+
+    """
 
     cwd = os.getcwd()
 
@@ -108,20 +126,27 @@ def build(defs, show=0):
 
     topics, other = get_topics(defs)
 
+    latest_entries = get_most_recent_entries(topics, defs)
+
     # for each topic, we want to create a "topic.rst" that then has
     # things subdivided by year-month, and that a
     # "topic-year-month.rst" that includes the individual entries
     for topic in topics:
 
-        years, entries = get_topic_entries(topic, defs)
+        entries = get_topic_entries(topic, defs)
         tdir = os.path.join(source_dir, topic)
         os.chdir(tdir)
+
+        years = set(q.year for q in entries)
+        years = list(years)
+        years.sort(reverse=True)
 
         # we need to create ReST files of the form YYYY.rst.  These
         # will each then contain the links to the entries for that
         # year
         for y in years:
-            y_entries = [q for q in entries if q.startswith(y)]
+            y_entries = [q for q in entries if q.year == y]
+            print(topic, y, len(y_entries))
 
             with open(f"{y}.rst", "w") as yf:
                 yf.write("****\n")
@@ -133,7 +158,7 @@ def build(defs, show=0):
                 yf.write("   :caption: Contents:\n\n")
 
                 for entry in y_entries:
-                    yf.write(f"   {entry}/{entry}.rst\n")
+                    yf.write(f"   {entry.entry_date_num}/{entry.entry_date_num}.rst\n")
 
         # now write the topic.rst
         with open(f"{topic}.rst", "w") as tf:
@@ -167,16 +192,32 @@ def build(defs, show=0):
             for e in entries:
                 tf.write(f"   {e}\n")
 
+    # handle the most recent
+    os.chdir(source_dir)
+    with open("recent.rst", "w") as tf:
+        topic = "recent entries"
+        tf.write(len(topic)*"*" + "\n")
+        tf.write(f"{topic}\n")
+        tf.write(len(topic)*"*" + "\n")
+
+        tf.write(".. toctree::\n")
+        tf.write("   :maxdepth: 1\n")
+        tf.write("   :caption: Contents:\n\n")
+
+        for e in latest_entries:
+            tf.write(f"   {e} <{e.topic}/{e.entry_date_num}/{e.entry_date_num}.rst>\n")
+
     # now write the index.rst
     os.chdir(source_dir)
     with open("index.rst", "w") as mf:
         mf.write("Research Journal\n")
         mf.write("================\n\n")
 
-        if "todo" in other or "year_review" in other:
-            mf.write(".. toctree::\n")
-            mf.write("   :maxdepth: 1\n")
-            mf.write("   :caption: Summaries:\n\n")
+        mf.write(".. toctree::\n")
+        mf.write("   :maxdepth: 1\n")
+        mf.write("   :caption: Summaries:\n\n")
+
+        mf.write("   recent.rst\n")
 
         if "todo" in other:
             mf.write("   todo/todo.rst\n")
@@ -203,7 +244,7 @@ def build(defs, show=0):
     os.chdir(build_dir)
 
     _, _, rc = shell_util.run("make clean")
-    _, _, rc = shell_util.run("make html")
+    _, _, rc = shell_util.run("make -j 3 html")
 
     if rc != 0:
         print("build may have been unsuccessful")
