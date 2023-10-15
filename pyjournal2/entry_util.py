@@ -114,7 +114,7 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
     # If we passed in a string, then write it too.
     try:
         f = open(entry_file, "a+")
-    except IOError:
+    except OSError:
         sys.exit(f"ERROR: unable to open {os.path.join(odir, ofile)}")
 
     f.write(header)

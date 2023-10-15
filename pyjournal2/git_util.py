@@ -71,7 +71,7 @@ def init(nickname, username, master_path, working_path, defs):
             f.write(f"working_path = {working_path}\n")
             f.write(f"nickname = {nickname}\n")
             f.write(f"username = {username}\n")
-    except IOError:
+    except OSError:
         sys.exit(f"ERROR: unable to open {defs['param_file']} for appending")
 
     defs["master_repo"] = git_master
@@ -126,7 +126,7 @@ def connect(master_repo, working_path, defs):
             f.write(f"master_repo = {master_repo}\n")
             f.write(f"working_path = {working_path}\n")
             f.write(f"nickname = {nickname}\n")
-    except IOError:
+    except OSError:
         sys.exit(f"ERROR: unable to open {defs['param_file']} for appending")
 
 

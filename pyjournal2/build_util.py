@@ -172,15 +172,21 @@ def build(defs, show=0):
     with open("index.rst", "w") as mf:
         mf.write("Research Journal\n")
         mf.write("================\n\n")
-        mf.write(".. toctree::\n")
-        mf.write("   :maxdepth: 1\n")
-        mf.write("   :caption: Contents:\n\n")
+
+        if "todo" in other or "year_review" in other:
+            mf.write(".. toctree::\n")
+            mf.write("   :maxdepth: 1\n")
+            mf.write("   :caption: Summaries:\n\n")
 
         if "todo" in other:
             mf.write("   todo/todo.rst\n")
 
         if "year_review" in other:
             mf.write("   year_review/years.rst\n")
+
+        mf.write(".. toctree::\n")
+        mf.write("   :maxdepth: 1\n")
+        mf.write("   :caption: Topics:\n\n")
 
         for topic in sorted(topics):
             mf.write(f"   {topic}/{topic}\n")

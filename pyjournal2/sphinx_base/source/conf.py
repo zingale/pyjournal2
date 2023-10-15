@@ -18,8 +18,9 @@ import datetime
 # sys.path.insert(0, os.path.abspath('.'))
 import re
 
-import journal_info
 import sphinx_rtd_theme
+
+import journal_info
 
 # -- Project information -----------------------------------------------------
 
@@ -47,6 +48,7 @@ release = ''
 extensions = [
     'sphinx.ext.mathjax',
     'sphinx-prompt',
+    'sphinx_math_dollar',
     'sphinx_copybutton',
     'sphinx.ext.githubpages',
     'nbsphinx',
@@ -113,7 +115,6 @@ html_css_files = ["theme_overrides.css"]
 #
 # html_sidebars = {}
 
-
 # -- Options for MathJax
 # -- Options for MathJax
 mathjax3_config = {'tex': {'macros': {}}}
@@ -123,7 +124,8 @@ with open('mathsymbols.tex', 'r') as f:
         macros = re.findall(r'\\newcommand{\\(.*?)}(\[(\d)\])?{(.+)}', line)
         for macro in macros:
             if len(macro[1]) == 0:
-                mathjax3_config['tex']['macros'][macro[0]] = "{" + macro[3] + "}"
+                mathjax3_config['tex']['macros'][macro[0]
+                                                ] = "{" + macro[3] + "}"
             else:
                 mathjax3_config['tex']['macros'][macro[0]] = [
                     "{" + macro[3] + "}", int(macro[2])]
