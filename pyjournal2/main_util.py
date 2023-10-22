@@ -223,9 +223,9 @@ def main(args, defs):
 
         # get the entry id of the last entry for this topic -- note: we sort
         # with latest entries first
-        _, entries = build_util.get_topic_entries(topic, defs)
+        entries = build_util.get_topic_entries(topic, defs)
 
-        entry_util.entry(topic, images, link_files, defs, use_date=entries[0])
+        entry_util.entry(topic, images, link_files, defs, use_date=entries[0].entry_date_num)
 
     elif action == "build":
         build_util.build(defs)
