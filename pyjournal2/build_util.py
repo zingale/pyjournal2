@@ -137,7 +137,7 @@ def build(defs, show=0):
         tdir = os.path.join(source_dir, topic)
         os.chdir(tdir)
 
-        years = set(q.year for q in entries)
+        years = {q.year for q in entries}
         years = list(years)
         years.sort(reverse=True)
 
