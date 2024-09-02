@@ -59,10 +59,6 @@ def init(nickname, username, master_path, working_path, defs):
     except OSError:
         sys.exit("ERROR: unable to create initial directory structure")
 
-    # create the journal_info.py
-    with open(os.path.join(working_journal, "journal_info.py"), "w") as f:
-        f.write(f"username = \"{username}\"\n")
-
     # create the .pyjournal2rc file
     try:
         with open(defs["param_file"], "w") as f:
@@ -119,7 +115,7 @@ def connect(master_repo, working_path, defs):
         print(stderr)
         sys.exit("ERROR: something went wrong with the git clone")
 
-    # create (or add to) the .pyjournalrc file
+    # create (or add to) the .pyjournal2rc file
     try:
         with open(defs["param_file"], "w") as f:
             f.write("[main]\n")

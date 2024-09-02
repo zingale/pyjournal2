@@ -20,15 +20,15 @@ import re
 
 import sphinx_rtd_theme
 
-import journal_info
+username = "FIXME"
 
 # -- Project information -----------------------------------------------------
 
 now = datetime.datetime.now()
 
 project = 'research journal'
-copyright = "{} {}".format(now.year, journal_info.username)
-author = journal_info.username
+copyright = "{} {}".format(now.year, username)
+author = username
 
 # The short X.Y version
 version = ''
@@ -162,7 +162,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'researchjournal.tex', 'research journal Documentation',
-     journal_info.username, 'manual'),
+     username, 'manual'),
 ]
 
 
