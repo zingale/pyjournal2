@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='pyjournal2',
-      version='1.1.0',
+      version='1.2.1',
       description='a simple sphinx- & git-based research journal',
       url='https://github.com/zingale/pyjournal2',
       author='Mike Zingale',
