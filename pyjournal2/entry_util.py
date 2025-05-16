@@ -75,6 +75,10 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
         odir = f"{defs['working_path']}/journal-{defs['nickname']}/source/todo/"
         ofile = "todo.rst"
 
+    if topic == "projects":
+        odir = f"{defs['working_path']}/journal-{defs['nickname']}/source/projects/"
+        ofile = "projects.rst"
+
     elif topic == "year":
         odir = f"{defs['working_path']}/journal-{defs['nickname']}/source/year_review/"
         ofile = f"year-{current_year}.rst"
@@ -100,6 +104,8 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
     if not os.path.isfile(entry_file):
         if ofile == "todo.rst":
             header = len("todo")*"*" + "\n" + "todo\n" + len("todo")*"*" + "\n"
+        elif ofile == "projects.rst":
+            header = len("projects")*"*" + "\n" + "projects\n" + len("projects")*"*" + "\n"
         elif ofile.startswith("year-"):
             title = f"{current_year}"
             header = len(title)*"*" + "\n" + f"{title}\n" + len(title)*"*" + "\n\n"

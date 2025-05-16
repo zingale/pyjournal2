@@ -87,6 +87,10 @@ def get_args(defs):
         sp.add_parser("todo",
                       help="edit the todo list")
 
+        # the projects command
+        sp.add_parser("projects",
+                      help="edit the projects list")
+
         # the year command
         sp.add_parser("year",
                       help="edit the years' goals")
@@ -200,6 +204,13 @@ def main(args, defs):
         link_files = []
 
         entry_util.entry("todo", images, link_files, defs)
+
+    elif action == "projects":
+        # projects is a special topic with only a single entry
+        images = []
+        link_files = []
+
+        entry_util.entry("projects", images, link_files, defs)
 
     elif action == "year":
         # year is a special topic with only a single entry per year

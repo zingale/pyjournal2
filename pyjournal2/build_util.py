@@ -34,10 +34,14 @@ def get_topics(defs):
         if os.path.isdir(os.path.join(source_dir, d)) and not d.startswith("_"):
             topics.append(d)
 
-    # remove todo -- it will be treated specially
+    # remove todo, projects, and year_review -- they will be treated specially
     if "todo" in topics:
         topics.remove("todo")
         other.append("todo")
+
+    if "projects" in topics:
+        topics.remove("projects")
+        other.append("projects")
 
     if "year_review" in topics:
         topics.remove("year_review")
@@ -218,6 +222,9 @@ def build(defs, show=0):
 
         mf.write("   recent.rst\n")
 
+        if "projects" in other:
+            mf.write("   projects/projects.rst\n")
+
         if "todo" in other:
             mf.write("   todo/todo.rst\n")
 
@@ -239,7 +246,7 @@ def build(defs, show=0):
         mf.write("* :ref:`search`\n")
 
     # now do the building
-    build_dir = "{}/journal-{}/".format(defs["working_path"], defs["nickname"])
+    build_dir = f"{defs["working_path"]}/journal-{defs["nickname"]}/"
     os.chdir(build_dir)
 
     _, _, rc = shell_util.run("make clean")

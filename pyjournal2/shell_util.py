@@ -7,6 +7,10 @@ import subprocess
 def run(string):
     """run a command and capture the output and return code"""
 
+    stdout = None
+    stderr = None
+    rc = None
+
     # shlex.split will preserve inner quotes
     prog = shlex.split(string)
     if prog[0] == "vi":
