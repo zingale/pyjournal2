@@ -267,3 +267,9 @@ def main(args, defs):
         # we should never land here, because of the choices argument
         # to actions in the argparser
         sys.exit("invalid action")
+
+
+def run():
+    tdefs = read_config()
+    targs = get_args(tdefs)
+    main(targs, tdefs)
