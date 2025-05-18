@@ -20,11 +20,11 @@ Note: pyjournal2 requires python 3.7 or later
 * Installing:
 
   ```
-  python3 setup.py install --user
+  pip install .
   ```
 
-  (omit the `--user` for a systemwide installation).  This will put the
-  `pyjournal.py` executable script in you system's path.
+  This will put the
+  `pyjournal` executable script in you system's path.
 
   You should set your `EDITOR` environment variable.  This has been tested
   with emacs and vi.  For emacs, should should launch it in a terminal, e.g.,
@@ -39,18 +39,18 @@ Note: pyjournal2 requires python 3.7 or later
   pyjournal2 uses a number of subcommands to create, edit, and build a
   journal.  Doing:
   ```
-  pyjournal.py --help
+  pyjournal --help
   ```
   will list all the commands.  Additional help for each of the commands
   can be found by doing
   ```
-  pyjournal.py command --help
+  pyjournal command --help
   ```
   for the command `command`.
 
 * Starting:
 
-  - `pyjournal.py init nickname username master-path [working-path]`
+  - `pyjournal init nickname username master-path [working-path]`
 
     this initializes a bare git repo that will hold the journal data,
     creates the initial directory structure to hold the journal
@@ -85,7 +85,7 @@ Note: pyjournal2 requires python 3.7 or later
         ```
 
 
-  - `pyjournal.py connect remote-machine:/git-path/journal-nickname.git working-path`
+  - `pyjournal connect remote-machine:/git-path/journal-nickname.git working-path`
 
     If you already established a journal on another machine (using the
     `init` action), then `connect` is used to create a clone of that
@@ -101,7 +101,7 @@ Note: pyjournal2 requires python 3.7 or later
 
 * Day-to-day use:
 
-  - `pyjournal.py entry [--link link-files] [topic] [images [images ...]]`
+  - `pyjournal entry [--link link-files] [topic] [images [images ...]]`
 
     adds an entry to the journal under the topic `topic`.  If `topic`
     is not included, then the entry is put in the default `main` topic.
@@ -115,11 +115,11 @@ Note: pyjournal2 requires python 3.7 or later
     Some shortcuts exist for entries:
 
       * if you just want to do an entry to the main topic with no
-        images, you can simply type `pyjournal.py` without any
+        images, you can simply type `pyjournal` without any
         arguments.
 
       * if you want to create an entry in an existing topic, you can
-        just do `pyjournal.py topic`, omitting the word `entry`.
+        just do `pyjournal topic`, omitting the word `entry`.
 
     To create a new topic, simply do:
 
@@ -129,29 +129,29 @@ Note: pyjournal2 requires python 3.7 or later
     and if you answer yes, the editor will pop up with a blank entry
     page in the new topic.
 
-  - `pyjournal.py build`
+  - `pyjournal build`
 
     builds the journal Sphinx webpage
 
-  - `pyjournal.py show`
+  - `pyjournal show`
 
     builds the journal webpage and opens it in a tab of your existing
     web browswer.
 
-  - `pyjournal.py pull`
+  - `pyjournal pull`
 
     gets any changes from the master version of the journal (remote
     git bare repository)
 
-  - `pyjournal.py push`
+  - `pyjournal push`
 
     pushes any changes in the local journal to the remote (git bare
     repo) version
 
-  - `pyjournal.py continue topic-name`
+  - `pyjournal continue topic-name`
 
     continues editing the previous entry for a topic.  This is only
     needed if you want to continue an entry from the previous day.
-    Otherwise, `pyjournal.py topic-name` will always continue the
+    Otherwise, `pyjournal topic-name` will always continue the
     current day's entry.
 
