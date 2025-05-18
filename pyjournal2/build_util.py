@@ -16,6 +16,7 @@ class Entry:
     def __str__(self):
         return f"{self.topic}: {self.entry_date_num}"
 
+
 def get_source_dir(defs):
     """return the directory where we put the sources"""
     return f"{defs['working_path']}/journal-{defs['nickname']}/source/"
@@ -68,11 +69,12 @@ def get_topic_entries(topic, defs):
             y, _, _ = d.split("-")
             entries.append(Entry(topic, y, d))
 
-    entries.sort(reverse=True, key=lambda e : e.entry_date_num)
+    entries.sort(reverse=True, key=lambda e: e.entry_date_num)
 
     os.chdir(cwd)
 
     return entries
+
 
 def get_most_recent_entries(topics, defs, *, N=25):
     """return the N most recent entries, regardless of topic"""
@@ -83,6 +85,7 @@ def get_most_recent_entries(topics, defs, *, N=25):
 
     entries.sort(reverse=True, key=lambda e: e.entry_date_num)
     return entries[0:N]
+
 
 def get_year_review_entries(defs):
     """a year review is a special topic for a single year, this gets

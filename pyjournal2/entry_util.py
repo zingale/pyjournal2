@@ -119,66 +119,64 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
     # open (and create if necessary) the entry file.
     # If we passed in a string, then write it too.
     try:
-        f = open(entry_file, "a+")
+        with open(entry_file, "a+") as f:
+            f.write(header)
+            if string is not None:
+                f.write(string)
+
+            # if there are images, then copy them over and add the figure
+            # headings to the entry
+            unique_id = get_unique_string()
+
+            files_copied = []
+            for im in images + link_files:
+
+                if im is None:
+                    continue
+
+                # does an file by that name already live in the dest
+                # directory?
+                src = im
+                dest = odir
+
+                im_copy = os.path.basename(im)
+                if os.path.isfile(f"{dest}/{im_copy}"):
+                    im_copy = f"{unique_id.replace('.', '_')}_{im_copy}"
+
+                dest = os.path.join(dest, im_copy)
+
+                # copy it
+                if im != "":
+                    try:
+                        shutil.copy(src, dest)
+                    except OSError:
+                        sys.exit(f"ERROR: unable to copy image {src} to {dest}")
+
+                    files_copied.append(im_copy)
+
+                    if im in images:
+                        # create a unique label for latex referencing
+                        idx = im_copy.lower().rfind(".jpg")
+                        idx = max(idx, im_copy.lower().rfind(".png"))
+                        idx = max(idx, im_copy.lower().rfind(".gif"))
+                        idx = max(idx, im_copy.lower().rfind(".pdf"))
+
+                        if idx >= 0:
+                            im0 = f"{unique_id}:{im_copy[:idx]}"
+                        else:
+                            sys.exit("unsupported image type -- try creating a link instead")
+
+                        # add the figure text
+                        for l in FIGURE_STR.split("\n"):
+                            new_name = l.replace("@figname@", im_copy).replace("@figlabel@", im0).rstrip()
+                            f.write(f"{new_name}\n")
+
+                    else:
+                        # add the download directive
+                        f.write(f":download:`{im_copy} <{im_copy}>`\n\n")
+
     except OSError:
         sys.exit(f"ERROR: unable to open {os.path.join(odir, ofile)}")
-
-    f.write(header)
-    if string is not None:
-        f.write(string)
-
-    # if there are images, then copy them over and add the figure
-    # headings to the entry
-    unique_id = get_unique_string()
-
-    files_copied = []
-    for im in images + link_files:
-
-        if im is None:
-            continue
-
-        # does an file by that name already live in the dest
-        # directory?
-        src = im
-        dest = odir
-
-        im_copy = os.path.basename(im)
-        if os.path.isfile(f"{dest}/{im_copy}"):
-            im_copy = f"{unique_id.replace('.', '_')}_{im_copy}"
-
-        dest = os.path.join(dest, im_copy)
-
-        # copy it
-        if im != "":
-            try:
-                shutil.copy(src, dest)
-            except OSError:
-                sys.exit(f"ERROR: unable to copy image {src} to {dest}")
-
-            files_copied.append(im_copy)
-
-            if im in images:
-                # create a unique label for latex referencing
-                idx = im_copy.lower().rfind(".jpg")
-                idx = max(idx, im_copy.lower().rfind(".png"))
-                idx = max(idx, im_copy.lower().rfind(".gif"))
-                idx = max(idx, im_copy.lower().rfind(".pdf"))
-
-                if idx >= 0:
-                    im0 = f"{unique_id}:{im_copy[:idx]}"
-                else:
-                    sys.exit("unsupported image type -- try creating a link instead")
-
-                # add the figure text
-                for l in FIGURE_STR.split("\n"):
-                    new_name = l.replace("@figname@", im_copy).replace("@figlabel@", im0).rstrip()
-                    f.write(f"{new_name}\n")
-
-            else:
-                # add the download directive
-                f.write(f":download:`{im_copy} <{im_copy}>`\n\n")
-
-    f.close()
 
     # launch the editor specified in the EDITOR environment variable
     if string is None:

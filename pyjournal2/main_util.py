@@ -199,7 +199,7 @@ def main(args, defs):
         entry_util.entry(topic, images, link_files, defs)
 
     elif action == "todo":
-        # todo is a special topic with only a single entry
+        # "todo" is a special topic with only a single entry
         images = []
         link_files = []
 

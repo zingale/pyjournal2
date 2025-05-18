@@ -131,7 +131,7 @@ def connect(master_repo, working_path, defs):
 #=============================================================================
 
 
-def pull(defs, nickname=None):
+def pull(defs):
     """pull the journal from the origin"""
 
     wd = f"{defs['working_path']}/journal-{defs['nickname']}"
@@ -149,7 +149,7 @@ def pull(defs, nickname=None):
     print(stdout)
 
 
-def push(defs, nickname=None):
+def push(defs):
     """push the journal to the origin"""
 
     # switch to the working directory and push to the master
