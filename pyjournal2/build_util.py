@@ -249,7 +249,7 @@ def build(defs, show=0):
         mf.write("* :ref:`search`\n")
 
     # now do the building
-    build_dir = f"{defs["working_path"]}/journal-{defs["nickname"]}/"
+    build_dir = f"{defs['working_path']}/journal-{defs['nickname']}/"
     os.chdir(build_dir)
 
     _, _, rc = shell_util.run("make clean")
