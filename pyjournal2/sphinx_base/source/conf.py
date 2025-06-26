@@ -47,13 +47,16 @@ release = ''
 # ones.
 extensions = [
     'sphinx.ext.mathjax',
-    'sphinx-prompt',
+    'sphinx_prompt',
     'sphinx_math_dollar',
     'sphinx_copybutton',
     'sphinx.ext.githubpages',
     'nbsphinx',
     'IPython.sphinxext.ipython_console_highlighting'
 ]
+
+# Don't include the extra CSS from sphinx-prompt when using the copy button
+copybutton_exclude = 'style'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
