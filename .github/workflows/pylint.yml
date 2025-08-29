@@ -5,31 +5,23 @@ on:
   # but only for the master branch
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - masin
 
 jobs:
   pylint:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
 
-      - name: Install Python 3.9
-        uses: actions/setup-python@v2
+      - name: Install Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
-
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          # this path is specific to Ubuntu
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          python-version: '3.11'
+          cache: 'pip'
 
       - name: Install dependencies + pylint
         run: |
@@ -37,7 +29,7 @@ jobs:
           pip install pylint
 
       - name: Install pynjournal2
-        run: python setup.py install --user
+        run: pip install .
 
       - name: Validate
         run: pylint --errors-only pyjournal2
