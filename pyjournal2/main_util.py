@@ -202,7 +202,6 @@ def main(args, defs):
         # "todo" is a special topic with only a single entry
         images = []
         link_files = []
-
         entry_util.entry("todo", images, link_files, defs)
 
     elif action == "projects":

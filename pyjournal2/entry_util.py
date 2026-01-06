@@ -75,7 +75,7 @@ def entry(topic, images, link_files, defs, string=None, use_date=None):
         odir = f"{defs['working_path']}/journal-{defs['nickname']}/source/todo/"
         ofile = "todo.rst"
 
-    if topic == "projects":
+    elif topic == "projects":
         odir = f"{defs['working_path']}/journal-{defs['nickname']}/source/projects/"
         ofile = "projects.rst"
 
