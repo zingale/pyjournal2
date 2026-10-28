@@ -130,9 +130,6 @@ with open('mathsymbols.tex', 'r') as f:
         macros = re.findall(r'\\newcommand{\\(.*?)}(\[(\d)\])?{(.+)}', line)
         for macro in macros:
             if len(macro[1]) == 0:
-                mathjax4_config['tex']['macros'][macro[0]
-                                                ] = "{" + macro[3] + "}"
+                mathjax4_config['tex']['macros'][macro[0]] = "{" + macro[3] + "}"
             else:
-                mathjax4_config['tex']['macros'][macro[0]] = [
-                    "{" + macro[3] + "}", int(macro[2])]
-
+                mathjax4_config['tex']['macros'][macro[0]] = ["{" + macro[3] + "}", int(macro[2])]
